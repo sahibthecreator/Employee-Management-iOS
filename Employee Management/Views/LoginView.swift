@@ -9,65 +9,82 @@ import Foundation
 import SwiftUI
 
 struct LoginView: View {
-    @State private var email = ""
-    @State private var password = ""
+    @StateObject private var viewModel = LoginViewModel()
 
     var body: some View {
-        ZStack {
-            AppColors.primary
-                .ignoresSafeArea()
-            
-            VStack {
-                Image("karma_kebab_logo")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 150, height: 150)
+        NavigationStack{
+            ZStack {
+                AppColors.primary
+                    .ignoresSafeArea()
                 
-                Spacer()
-
-                // Main container
-                VStack(spacing: 20) {
-                    Text("Hello there, login to continue")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    // Email and Password fields
-                    Group {
-                        TextField("Email Address", 
-                                  text: $email,
-                                  prompt: Text("Email Address")
-                                            .foregroundColor(.white)
-                        )
-                        SecureField("Password", 
-                                    text: $password,
-                                    prompt: Text("Password")
-                                             .foregroundColor(.white)
-                        )
-                    }
-                    .padding()
-                    .background(Color.clear)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(AppColors.secondary, lineWidth: 2)
-                    )
-                    .foregroundColor(.white)
+                VStack {
+                    Image("karma_kebab_logo")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 150, height: 150)
                     
-                    // Login Button
-                    Button(action: {
-                        // Login action
-                    }) {
-                        Text("Login")
-                            .fontWeight(.bold)
+                    Spacer()
+                    
+                    // Main container
+                    VStack(spacing: 20) {
+                        Text("Hello there, login to continue")
+                            .font(.headline)
                             .foregroundColor(.white)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(AppColors.secondary)
-                            .cornerRadius(10)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        // Email and Password fields
+                        Group {
+                            TextField("Email Address", 
+                                      text: $viewModel.email,
+                                      prompt: Text("Email Address")
+                                .foregroundColor(.white)
+                            )
+                            SecureField("Password", 
+                                        text: $viewModel.password,
+                                        prompt: Text("Password")
+                                .foregroundColor(.white)
+                            )
+                        }
+                        .padding()
+                        .background(Color.clear)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(AppColors.secondary, lineWidth: 2)
+                        )
+                        .foregroundColor(.white)
+                        
+                        if let errorMessage = viewModel.errorMessage {
+                            Text(errorMessage)
+                                .foregroundColor(.red)
+                                .font(.footnote)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        
+                        // Login Button
+                        Button(action: {
+                            viewModel.login()
+                        }) {
+                            if viewModel.isLoading {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            } else {
+                                Text("Login")
+                                    .fontWeight(.bold)
+                            }
+                        }
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(AppColors.secondary)
+                        .cornerRadius(10)
+                        .disabled(viewModel.isLoading)
                     }
+                    .padding(.horizontal, 40)
+                    
+                    Spacer()
                 }
-                .padding(.horizontal, 40)
-                
-                Spacer()
+                .navigationDestination(isPresented: $viewModel.isAuthenticated) {
+                    HomeView()
+                }
             }
         }
     }
