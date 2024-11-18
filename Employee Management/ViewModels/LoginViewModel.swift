@@ -16,6 +16,12 @@ class LoginViewModel: ObservableObject {
     @Published var isAuthenticated: Bool = false
 
     func login() {
+        for family in UIFont.familyNames {
+            print("Font family: \(family)")
+            for fontName in UIFont.fontNames(forFamilyName: family) {
+                print("  Font name: \(fontName)")
+            }
+        }
         // Reset previous error state
         errorMessage = nil
         isLoading = true
