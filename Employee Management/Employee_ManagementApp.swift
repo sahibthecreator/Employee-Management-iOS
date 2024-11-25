@@ -9,9 +9,19 @@ import SwiftUI
 
 @main
 struct Employee_ManagementApp: App {
+    @StateObject private var authViewModel = AuthViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if authViewModel.isAuthenticated {
+                TabBar()
+                    .environmentObject(authViewModel)
+            } else {
+                LoginView()
+                    .environmentObject(authViewModel)
+            }
         }
     }
 }
+
+

@@ -8,26 +8,20 @@
 import Foundation
 import SwiftUI
 
-class LoginViewModel: ObservableObject {
+class AuthViewModel: ObservableObject {
     @Published var email: String = ""
     @Published var password: String = ""
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
-    @Published var isAuthenticated: Bool = false
+    @Published var isAuthenticated: Bool = true
 
     func login() {
-        for family in UIFont.familyNames {
-            print("Font family: \(family)")
-            for fontName in UIFont.fontNames(forFamilyName: family) {
-                print("  Font name: \(fontName)")
-            }
-        }
         // Reset previous error state
         errorMessage = nil
         isLoading = true
 
         // Mock login delay
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.isLoading = false
 
             // Simple validation for testing
@@ -37,5 +31,9 @@ class LoginViewModel: ObservableObject {
                 self.errorMessage = "Invalid email or password."
             }
         }
+    }
+    
+    func logOut() {
+        self.isAuthenticated = false
     }
 }

@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 struct LoginView: View {
-    @StateObject private var viewModel = LoginViewModel()
+    @StateObject private var viewModel = AuthViewModel()
 
     var body: some View {
         NavigationStack{
@@ -83,7 +83,7 @@ struct LoginView: View {
                     Spacer()
                 }
                 .navigationDestination(isPresented: $viewModel.isAuthenticated) {
-                    HomeView()
+                    HomeScreen()
                 }
             }
         }

@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct HeaderView: View {
+struct Header: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             AppColors.primary
@@ -45,7 +45,7 @@ struct HeaderView: View {
                     .padding()
             }
         }
-        .frame(height: 35) 
+        .frame(height: 85) 
     }
 }
 

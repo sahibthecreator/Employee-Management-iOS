@@ -13,3 +13,5 @@ struct AppFonts {
             Font.custom("Mindset-Regular", size: size, relativeTo: .title)
         }
 }
+
+// extension is possible
