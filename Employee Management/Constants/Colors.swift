@@ -11,6 +11,8 @@ import SwiftUI
 struct AppColors {
     static let primary = Color(hex: "662C83")
     static let secondary = Color(hex: "E8468E")
+    static let tertiary = Color(hex: "F29FA8")
+    static let dark = Color(hex: "0D1829")
 }
 
 extension Color {

@@ -9,28 +9,56 @@ import Foundation
 
 class CalendarViewModel: ObservableObject {
     @Published var selectedTab: Int = 0 // 0: My Schedule, 1: Upcoming Events
+    @Published var currentWeek: Date = Date() // Start of the current week
+    @Published var isFullMonthView: Bool = false // Toggle for full month calendar
     @Published var shifts: [Shift] = []
     @Published var events: [Event] = []
 
     init() {
-        // Simulate data fetching
-        loadShifts()
-        loadEvents()
+        fetchContent(for: currentWeek)
     }
 
-    func loadShifts() {
-        shifts = [
-            Shift(title: "Vegan Summer Festival", location: "Prinses 202, Utrecht", date: "SEP 24, 2024", time: "07:00 – 15:00", role: "Trucker", teammates: ["AZ", "BR", "SZ", "+3"], isDraft: false),
-            Shift(title: "Kebab Festival", location: "Haarlemplein, Amsterdam", date: "SEP 26, 2024", time: "07:00 – 15:00", role: "Building crew", teammates: ["AZ", "BR", "SZ", "+3"], isDraft: true),
-            Shift(title: "Donner Festival", location: "Dam 132, Utrecht", date: "SEP 30, 2024", time: "08:00 – 17:00", role: "Trucker", teammates: ["AZ", "BR", "SZ", "+3"], isDraft: false)
-        ]
+    // Fetch data based on the current week's date range
+    func fetchContent(for startDate: Date) {
+        let range = dateRange(for: startDate)
+        shifts = dummyShifts.filter { range.contains($0.date) }
+        events = dummyEvents.filter { range.contains($0.date) }
     }
 
-    func loadEvents() {
-        events = [
-            Event(title: "Music Fest", location: "Central Park, Utrecht", date: "SEP 24, 2024", time: "19:00 – 23:00", isDraft: false),
-            Event(title: "Food Carnival", location: "Downtown, Amsterdam", date: "SEP 25, 2024", time: "12:00 – 20:00", isDraft: true)
-        ]
+    // Navigate to the previous week
+    func previousWeek() {
+        currentWeek = Calendar.current.date(byAdding: .weekOfYear, value: -1, to: currentWeek)!
+        fetchContent(for: currentWeek)
+    }
+
+    // Navigate to the next week
+    func nextWeek() {
+        currentWeek = Calendar.current.date(byAdding: .weekOfYear, value: 1, to: currentWeek)!
+        fetchContent(for: currentWeek)
+    }
+
+    // Select a specific week from the full month view
+    func selectWeek(startingFrom date: Date) {
+        currentWeek = date
+        isFullMonthView = false
+        fetchContent(for: currentWeek)
+    }
+
+    // Helper: Calculate the date range for a week
+    private func dateRange(for startDate: Date) -> ClosedRange<Date> {
+        let startOfWeek = Calendar.current.startOfWeek(for: startDate)
+        let endOfWeek = Calendar.current.date(byAdding: .day, value: 6, to: startOfWeek)!
+        return startOfWeek...endOfWeek
+    }
+}
+
+// Extension for Calendar to calculate the start of a week
+extension Calendar {
+    func startOfWeek(for date: Date) -> Date {
+        guard let startOfWeek = self.date(from: self.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)) else {
+            fatalError("Failed to calculate the start of the week for \(date). Check your calendar settings.")
+        }
+        return startOfWeek
     }
 }
 
@@ -38,7 +66,7 @@ class CalendarViewModel: ObservableObject {
 struct Shift {
     let title: String
     let location: String
-    let date: String
+    let date: Date
     let time: String
     let role: String
     let teammates: [String]
@@ -48,7 +76,7 @@ struct Shift {
 struct Event {
     let title: String
     let location: String
-    let date: String
+    let date: Date
     let time: String
     let isDraft: Bool?
 }

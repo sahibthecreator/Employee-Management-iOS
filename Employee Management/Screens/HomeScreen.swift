@@ -20,22 +20,10 @@ struct HomeScreen: View {
                     SectionHeaderView(title: "Upcoming Shifts")
                     VStack(spacing: 10) {
                         ShiftCardView(
-                            title: "Vegan Summer Festival",
-                            location: "Prinses 202, Utrecht",
-                            date: "SEP 24, 2024",
-                            time: "07:00 – 15:00",
-                            role: "Trucker",
-                            teammates: ["AZ", "BR", "SZ", "+3"], 
-                            isUnavailable: true
+                            shift: dummyShifts[0]
                         )
                         ShiftCardView(
-                            title: "Kebab Festival",
-                            location: "Haarlemplein, Amsterdam",
-                            date: "SEP 26, 2024",
-                            time: "07:00 – 15:00",
-                            role: "Building crew",
-                            teammates: ["AZ", "BR", "SZ", "+3"],
-                            isUnavailable: true
+                            shift: dummyShifts[1]
                         )
                     }
                     Button(action: {}) {
@@ -52,11 +40,7 @@ struct HomeScreen: View {
                     SectionHeaderView(title: "Upcoming Events")
                     VStack(spacing: 10) {
                         EventCardView(
-                            title: "Oz Festival",
-                            location: "Prinses 91, Utrecht",
-                            date: "SEP 25, 2024",
-                            time: "07:00 – 15:00",
-                            isDraft: true
+                            event: dummyEvents[0]
                         )
                     }
                     Button(action: {}) {
@@ -90,65 +74,57 @@ struct SectionHeaderView: View {
 }
 
 struct ShiftCardView: View {
-    let title: String
-    let location: String
-    let date: String
-    let time: String
-    let role: String?
-    let teammates: [String]?
-    let isUnavailable: Bool?
+    let shift: Shift
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 VStack(alignment: .leading) {
-                    Text(title)
+                    Text(shift.title)
                         .font(.headline)
                         .fontWeight(.bold)
-                    Text(location)
+                    Text(shift.location)
                         .font(.subheadline)
                         .foregroundColor(.gray)
                 }
                 Spacer()
                 VStack(alignment: .trailing) {
-                    Text(date)
+                    Text(shift.date.formatted) // Use formatted date
                         .font(.subheadline)
                         .fontWeight(.bold)
-                    Text(time)
+                    Text(shift.time)
                         .font(.subheadline)
-                        .foregroundColor(isUnavailable ?? false ? .red : .gray)
+                        .foregroundColor(shift.isDraft ?? false ? .red : .gray)
                 }
             }
-
+            
             HStack {
-                if let teammates = teammates {
-                    VStack(alignment: .leading) {
-                        Text("Teammates")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                        HStack(spacing: -10) {
-                            ForEach(teammates, id: \.self) { teammate in
-                                Circle()
-                                    .fill(AppColors.secondary)
-                                    .frame(width: 30, height: 30)
-                                    .overlay(
-                                        Text(teammate)
-                                            .font(.caption)
-                                            .foregroundColor(.white)
-                                    )
-                            }
+                
+                VStack(alignment: .leading) {
+                    Text("Teammates")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                    HStack(spacing: -10) {
+                        ForEach(shift.teammates, id: \.self) { teammate in
+                            Circle()
+                                .fill(AppColors.secondary)
+                                .frame(width: 30, height: 30)
+                                .overlay(
+                                    Text(teammate)
+                                        .font(.caption)
+                                        .foregroundColor(.white)
+                                )
                         }
                     }
                 }
-                
-                if let role = role {
-                    HStack {
-                        Spacer()
-                        Text(role)
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                    }
+            
+                HStack {
+                    Spacer()
+                    Text(shift.role)
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
                 }
+                
             }
         }
         .padding()
@@ -158,32 +134,29 @@ struct ShiftCardView: View {
     }
 }
 
+
 struct EventCardView: View {
-    let title: String
-    let location: String
-    let date: String
-    let time: String
-    let isDraft: Bool?
+    let event: Event
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 VStack(alignment: .leading) {
-                    Text(title)
+                    Text(event.title)
                         .font(.headline)
                         .fontWeight(.bold)
-                    Text(location)
+                    Text(event.location)
                         .font(.subheadline)
                         .foregroundColor(.gray)
                 }
                 Spacer()
                 VStack(alignment: .trailing) {
-                    Text(date)
+                    Text(event.date.formatted) // Use formatted date
                         .font(.subheadline)
                         .fontWeight(.bold)
-                    Text(time)
+                    Text(event.time)
                         .font(.subheadline)
-                        .foregroundColor(isDraft ?? false ? .red : .gray)
+                        .foregroundColor(event.isDraft ?? false ? .red : .gray)
                 }
             }
         }

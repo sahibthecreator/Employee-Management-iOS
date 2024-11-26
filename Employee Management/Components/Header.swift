@@ -39,9 +39,9 @@ struct Header: View {
             HStack {
                 Spacer()
                 Circle()
-                    .fill(Color.pink)
+                    .fill(AppColors.tertiary)
                     .frame(width: 50, height: 50)
-                    .overlay(Text("BB").foregroundColor(.white).fontWeight(.bold))
+                    .overlay(Text("BB").foregroundColor(AppColors.primary).font(AppFonts.primary()))
                     .padding()
             }
         }

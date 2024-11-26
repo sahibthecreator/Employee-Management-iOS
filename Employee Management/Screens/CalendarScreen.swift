@@ -9,48 +9,32 @@ import Foundation
 import SwiftUI
 
 struct CalendarScreen: View {
-    @StateObject private var viewModel = CalendarViewModel()
+    @StateObject var viewModel: CalendarViewModel
+    
+    init(viewModel: CalendarViewModel = CalendarViewModel()) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
     
     var body: some View {
-        Header()
-        VStack(spacing: 0) {
+        VStack(spacing: 10) {
+            Header()
             // Tab Navigation
             CalendarTabSelector(selectedTab: $viewModel.selectedTab)
 
-            // Week Selector
-            HStack {
-                Button(action: {
-                    // Navigate to previous week
-                }) {
-                    Image(systemName: "chevron.left")
-                        .foregroundColor(AppColors.secondary)
-                        .padding()
-                        .background(Circle().stroke(AppColors.secondary, lineWidth: 2))
-                }
-
-                Spacer()
-
-                VStack {
-                    Text("Week 39")
-                        .fontWeight(.bold)
-                    Text("23 sep. - 30 sep.")
-                        .foregroundColor(.gray)
-                        .font(.caption)
-                }
-
-                Spacer()
-
-                Button(action: {
-                    // Navigate to next week
-                }) {
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(AppColors.secondary)
-                        .padding()
-                        .background(Circle().stroke(AppColors.secondary, lineWidth: 2))
-                }
-            }
-            .padding(.horizontal)
-            .padding(.vertical, 10)
+            
+            if viewModel.isFullMonthView {
+               FullCalendar(
+                   selectedDate: $viewModel.currentWeek,
+                   onSelectWeek: viewModel.selectWeek
+               )
+           } else {
+               WeekSelector(
+                   currentWeek: viewModel.currentWeek,
+                   onPreviousWeek: viewModel.previousWeek,
+                   onNextWeek: viewModel.nextWeek,
+                   onToggleFullMonthView: { viewModel.isFullMonthView.toggle() }
+               )
+           }
             
             // Shifts List
             ScrollView {
@@ -59,24 +43,14 @@ struct CalendarScreen: View {
                         // Display Shifts
                         ForEach(viewModel.shifts, id: \.title) { shift in
                             ShiftCardView(
-                                title: shift.title,
-                                location: shift.location,
-                                date: shift.date,
-                                time: shift.time,
-                                role: shift.role,
-                                teammates: shift.teammates,
-                                isUnavailable: shift.isDraft
+                               shift: shift
                             )
                         }
                     } else {
                         // Display Events
                         ForEach(viewModel.events, id: \.title) { event in
                             EventCardView(
-                                title: event.title,
-                                location: event.location,
-                                date: event.date,
-                                time: event.time,
-                                isDraft: event.isDraft
+                                event: event
                             )
                         }
                     }

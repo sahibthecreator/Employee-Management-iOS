@@ -12,34 +12,55 @@ struct CalendarTabSelector: View {
     @Binding var selectedTab: Int
 
     var body: some View {
-        HStack {
-            Button(action: {
-                selectedTab = 0
-            }) {
-                Text("MY SCHEDULE")
-                    .fontWeight(.bold)
-                    .font(.system(size: 10))
-                    .foregroundColor(selectedTab == 0 ? .white : AppColors.primary)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(selectedTab == 0 ? AppColors.secondary : Color.clear)
-                    .cornerRadius(20)
+        ZStack(alignment: .leading) {
+            RoundedRectangle(cornerRadius: 10)
+                .fill(AppColors.secondary)
+                .frame(height: 40)
+
+            // Animated Highlight
+            GeometryReader { geometry in
+                let buttonWidth = geometry.size.width / 2
+                let buttonHeight = geometry.size.height
+
+                RoundedRectangle(cornerRadius: 5)
+                    .fill(AppColors.primary)
+                    .frame(width: buttonWidth - 10, height: buttonHeight - 16) // Highlight size
+                    .offset(x: CGFloat(selectedTab) * buttonWidth + 5, y: 8.5) // Move based on tab
+                    .animation(.easeInOut(duration: 0.3), value: selectedTab)
             }
 
-            Button(action: {
-                selectedTab = 1
-            }) {
-                Text("UPCOMING EVENTS")
-                    .fontWeight(.bold)
-                    .font(.system(size: 10))
-                    .foregroundColor(selectedTab == 1 ? .white : AppColors.primary)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(selectedTab == 1 ? AppColors.secondary : Color.clear)
-                    .cornerRadius(20)
+            // Tabs
+            HStack(spacing: 0) {
+                Button(action: {
+                    withAnimation {
+                        selectedTab = 0
+                    }
+                }) {
+                    Text("MY SCHEDULE")
+                        .fontWeight(.bold)
+                        .font(AppFonts.primary(size: 13))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+
+                Button(action: {
+                    withAnimation {
+                        selectedTab = 1
+                    }
+                }) {
+                    Text("OPEN SHIFTS")
+                        .fontWeight(.bold)
+                        .font(AppFonts.primary(size: 13))
+                        .foregroundColor(.white )
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
             }
         }
-        .padding(.horizontal)
-        .padding(.top, 10)
+        .frame(height: 45)
+        .padding(.horizontal, 60)
     }
+}
+
+#Preview {
+    CalendarScreen()
 }
