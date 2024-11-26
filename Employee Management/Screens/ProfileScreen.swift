@@ -9,6 +9,8 @@ import Foundation
 import SwiftUI
 
 struct ProfileScreen: View {
+    @StateObject private var viewModel = AuthViewModel()
+    
     var body: some View {
         VStack(spacing: 20) {
             Spacer().frame(height: 20)
@@ -54,7 +56,7 @@ struct ProfileScreen: View {
 
             // Logout Button
             Button(action: {
-                // Logout Action
+                viewModel.logOut()
             }) {
                 Text("LOGOUT")
                     .font(AppFonts.primary(size: 20))

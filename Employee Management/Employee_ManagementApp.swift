@@ -17,7 +17,7 @@ struct Employee_ManagementApp: App {
                 TabBar()
                     .environmentObject(authViewModel)
             } else {
-                LoginView()
+                LoginScreen()
                     .environmentObject(authViewModel)
             }
         }

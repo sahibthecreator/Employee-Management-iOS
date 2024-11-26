@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct LoginView: View {
+struct LoginScreen: View {
     @StateObject private var viewModel = AuthViewModel()
 
     var body: some View {
@@ -28,7 +28,7 @@ struct LoginView: View {
                     // Main container
                     VStack(spacing: 20) {
                         Text("Hello there, login to continue")
-                            .font(.headline)
+                            .font(AppFonts.primary(size: 16))
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity, alignment: .leading)
                         // Email and Password fields
@@ -37,11 +37,13 @@ struct LoginView: View {
                                       text: $viewModel.email,
                                       prompt: Text("Email Address")
                                 .foregroundColor(.white)
+                                .font(AppFonts.primary(size: 13))
                             )
                             SecureField("Password", 
                                         text: $viewModel.password,
                                         prompt: Text("Password")
                                 .foregroundColor(.white)
+                                .font(AppFonts.primary(size: 13))
                             )
                         }
                         .padding()
@@ -68,7 +70,7 @@ struct LoginView: View {
                                     .progressViewStyle(CircularProgressViewStyle(tint: .white))
                             } else {
                                 Text("Login")
-                                    .fontWeight(.bold)
+                                    .font(AppFonts.primary(size: 18))
                             }
                         }
                         .foregroundColor(.white)
@@ -81,11 +83,16 @@ struct LoginView: View {
                     .padding(.horizontal, 40)
                     
                     Spacer()
+                    Spacer()
                 }
                 .navigationDestination(isPresented: $viewModel.isAuthenticated) {
-                    HomeScreen()
+                    TabBar()
                 }
             }
         }
     }
+}
+
+#Preview {
+    LoginScreen()
 }

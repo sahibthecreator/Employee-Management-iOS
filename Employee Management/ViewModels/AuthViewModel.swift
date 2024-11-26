@@ -13,27 +13,59 @@ class AuthViewModel: ObservableObject {
     @Published var password: String = ""
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
-    @Published var isAuthenticated: Bool = true
-
+    @Published var isAuthenticated: Bool = false
+    
+    init() {
+        if let _ = UserDefaults.standard.string(forKey: "access_token") {
+            self.isAuthenticated = true
+        }
+    }
+    
     func login() {
-        // Reset previous error state
         errorMessage = nil
         isLoading = true
-
-        // Mock login delay
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.isLoading = false
-
-            // Simple validation for testing
-            if self.email.lowercased() == "test" && self.password == "test" {
-                self.isAuthenticated = true
-            } else {
-                self.errorMessage = "Invalid email or password."
+        
+        let parameters = ["username": email, "password": password]
+        
+        APIClient.shared.request(
+            endpoint: "auth/login",
+            method: "POST",
+            parameters: parameters,
+            headers: nil,
+            contentType: "form",
+            responseType: LoginResponse.self
+        ) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+                switch result {
+                case .success(let response):
+                    // Save the token and authenticate the user
+                    UserDefaults.standard.set(response.access_token, forKey: "access_token")
+                    self?.isAuthenticated = true
+                    
+                case .failure(let error):
+                    switch error {
+                    case .serverError(400):
+                        self?.errorMessage = "Missing username or password."
+                    case .serverError(401):
+                        self?.errorMessage = "Invalid email or password."
+                    default:
+                        print(error)
+                        self?.errorMessage = error.localizedDescription
+                    }
+                }
             }
         }
     }
     
     func logOut() {
-        self.isAuthenticated = false
+        UserDefaults.standard.removeObject(forKey: "access_token")
+        isAuthenticated = false
     }
+}
+
+struct LoginResponse: Decodable {
+    let access_token: String
+    let refresh_token: String
+    let expires_in: Int
 }
