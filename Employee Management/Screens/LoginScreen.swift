@@ -87,6 +87,7 @@ struct LoginScreen: View {
                 }
                 .navigationDestination(isPresented: $viewModel.isAuthenticated) {
                     TabBar()
+                        .navigationBarBackButtonHidden(true)
                 }
             }
         }
