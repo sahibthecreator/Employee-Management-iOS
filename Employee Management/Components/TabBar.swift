@@ -27,10 +27,10 @@ struct TabBar: View {
                     Text("Calendar")
                 }
 
-            MyHoursScreen()
+            AvailabilityScreen()
                 .tabItem {
                     Image(systemName: "clock")
-                    Text("My Hours")
+                    Text("My Availability")
                 }
 
             ProfileScreen()

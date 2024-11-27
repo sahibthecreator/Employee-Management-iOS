@@ -108,7 +108,7 @@ struct ShiftCardView: View {
                         HStack(spacing: -10) {
                             ForEach(shift.teammates, id: \.self) { teammate in
                                 Circle()
-                                    .fill(AppColors.secondary)
+                                    .fill(randomAppColor())
                                     .frame(width: 30, height: 30)
                                     .overlay(
                                         Text(teammate)
@@ -134,6 +134,21 @@ struct ShiftCardView: View {
             .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 5)
         }
         .buttonStyle(PlainButtonStyle())
+    }
+    
+    private func randomAppColor() -> Color {
+        let colors = [
+            AppColors.primary, // Original Primary
+            AppColors.secondary, // Original Secondary
+            AppColors.tertiary, // Original Tertiary
+            Color(hex: "662C83"), // Extra Original
+            Color(hex: "9B59B6"), // Soft Purple
+            Color(hex: "8E44AD"), // Deep Violet
+            Color(hex: "F39CBB"), // Soft Pink
+            Color(hex: "D988BC"), // Mauve
+            Color(hex: "D354A1")  // Vibrant Magenta
+        ]
+        return colors.randomElement() ?? AppColors.primary
     }
 }
 
