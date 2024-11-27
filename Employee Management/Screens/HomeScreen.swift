@@ -55,7 +55,7 @@ struct HomeScreen: View {
                 }
                 .padding()
             }
-            .padding(.top, 25) // Hardcoded solution
+            .padding(.top, 6) // Hardcoded solution
         }
         .background(Color(UIColor.systemGray6))
         .ignoresSafeArea(edges: .bottom)
@@ -77,60 +77,63 @@ struct ShiftCardView: View {
     let shift: Shift
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                VStack(alignment: .leading) {
-                    Text(shift.title)
-                        .font(.headline)
-                        .fontWeight(.bold)
-                    Text(shift.location)
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                }
-                Spacer()
-                VStack(alignment: .trailing) {
-                    Text(shift.date.formatted) // Use formatted date
-                        .font(.subheadline)
-                        .fontWeight(.bold)
-                    Text(shift.time)
-                        .font(.subheadline)
-                        .foregroundColor(shift.isDraft ?? false ? .red : .gray)
-                }
-            }
-            
-            HStack {
-                
-                VStack(alignment: .leading) {
-                    Text("Teammates")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                    HStack(spacing: -10) {
-                        ForEach(shift.teammates, id: \.self) { teammate in
-                            Circle()
-                                .fill(AppColors.secondary)
-                                .frame(width: 30, height: 30)
-                                .overlay(
-                                    Text(teammate)
-                                        .font(.caption)
-                                        .foregroundColor(.white)
-                                )
-                        }
+        NavigationLink(destination: ShiftDetailScreen(shift: shift)) {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(shift.title)
+                            .font(.headline)
+                            .fontWeight(.bold)
+                        Text(shift.location)
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                    }
+                    Spacer()
+                    VStack(alignment: .trailing) {
+                        Text(shift.date.formatted) // Use formatted date
+                            .font(.subheadline)
+                            .fontWeight(.bold)
+                        Text(shift.time)
+                            .font(.subheadline)
+                            .foregroundColor(shift.isDraft ?? false ? .red : .gray)
                     }
                 }
-            
-                HStack {
-                    Spacer()
-                    Text(shift.role)
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                }
                 
+                HStack {
+                    
+                    VStack(alignment: .leading) {
+                        Text("Teammates")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                        HStack(spacing: -10) {
+                            ForEach(shift.teammates, id: \.self) { teammate in
+                                Circle()
+                                    .fill(AppColors.secondary)
+                                    .frame(width: 30, height: 30)
+                                    .overlay(
+                                        Text(teammate)
+                                            .font(.caption)
+                                            .foregroundColor(.white)
+                                    )
+                            }
+                        }
+                    }
+                    
+                    HStack {
+                        Spacer()
+                        Text(shift.role)
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                    }
+                    
+                }
             }
+            .padding()
+            .background(Color.white)
+            .cornerRadius(10)
+            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 5)
         }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(10)
-        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 5)
+        .buttonStyle(PlainButtonStyle())
     }
 }
 

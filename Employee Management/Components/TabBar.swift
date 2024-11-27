@@ -12,13 +12,16 @@ struct TabBar: View {
     
     var body: some View {
         TabView {
-            HomeScreen()
+            NavigationView { // Is it correct?
+                HomeScreen()
+            }
                 .tabItem {
                     Image(systemName: "house.fill")
                     Text("Home")
                 }
-
-            CalendarScreen()
+            NavigationView {
+                CalendarScreen()
+            }
                 .tabItem {
                     Image(systemName: "calendar")
                     Text("Calendar")
