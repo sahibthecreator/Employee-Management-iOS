@@ -10,7 +10,8 @@ import SwiftUI
 
 struct AvailabilityScreen: View {
     @StateObject private var viewModel = AvailabilityViewModel()
-
+    @State private var isShowingModal = false // State to show/hide modal
+    
     var body: some View {
         VStack {
             Header()
@@ -99,9 +100,13 @@ struct AvailabilityScreen: View {
                                 .foregroundColor(.gray)
                         }
                         Spacer()
-                        Image(systemName: "calendar")
-                            .foregroundColor(AppColors.secondary)
-                            .padding(5)
+                        Button(action: {
+                            isShowingModal = true // Show the modal
+                        }) {
+                            Image(systemName: "calendar")
+                                .foregroundColor(AppColors.secondary)
+                                .padding(5)
+                        }
                     }
                     .padding()
                     .background(Color.white)
@@ -116,6 +121,11 @@ struct AvailabilityScreen: View {
         .background(Color(UIColor.systemGray6).ignoresSafeArea())
         .onAppear {
             viewModel.loadInitialData()
+        }
+        .sheet(isPresented: $isShowingModal) {
+            AvailabilityModal(isShowingModal: $isShowingModal, viewModel: viewModel)
+                .presentationBackground(.thinMaterial)
+                .presentationDetents([.medium, .large, .fraction(0.8), .height(400)])
         }
     }
 }

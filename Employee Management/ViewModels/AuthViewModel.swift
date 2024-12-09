@@ -13,7 +13,7 @@ class AuthViewModel: ObservableObject {
     @Published var password: String = ""
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
-    @Published var isAuthenticated: Bool = false
+    @Published var isAuthenticated: Bool = true
     
     init() {
         if let _ = UserDefaults.standard.string(forKey: "access_token") {
@@ -27,6 +27,8 @@ class AuthViewModel: ObservableObject {
         
         let parameters = ["username": email, "password": password]
         
+        // add async await!!
+        // optional but we can add service layer
         APIClient.shared.request(
             endpoint: "auth/login",
             method: "POST",
@@ -40,7 +42,7 @@ class AuthViewModel: ObservableObject {
                 switch result {
                 case .success(let response):
                     // Save the token and authenticate the user
-                    UserDefaults.standard.set(response.access_token, forKey: "access_token")
+                    UserDefaults.standard.set(response.access_token, forKey: "access_token") // save into keychain instead user defaults
                     self?.isAuthenticated = true
                     
                 case .failure(let error):

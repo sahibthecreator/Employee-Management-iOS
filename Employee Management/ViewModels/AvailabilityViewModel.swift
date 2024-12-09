@@ -88,6 +88,11 @@ class AvailabilityViewModel: ObservableObject {
         formatter.dateStyle = .full
         return formatter.string(from: selectedDate)
     }
+    
+    func saveAvailability(to newAvailability: String) {
+        availabilityData[selectedDate] = Availability(timeRange: newAvailability)
+        updateAvailability()
+    }
 }
 
 struct Availability {

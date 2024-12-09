@@ -71,6 +71,7 @@ struct Shift {
     let role: String
     let teammates: [String]
     let isDraft: Bool?
+    let employees: [Employee]
 }
 
 struct Event {

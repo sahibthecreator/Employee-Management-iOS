@@ -20,11 +20,12 @@ let dummyShifts = [
     Shift(
         title: "Vegan Summer Festival",
         location: "Prinses 202, Utrecht",
-        date: createDate(year: 2024, month: 11, day: 24),
+        date: createDate(year: 2024, month: 12, day: 9),
         time: "07:00 – 15:00",
         role: "Trucker",
         teammates: ["AZ", "BR", "SZ", "+3"],
-        isDraft: false
+        isDraft: false,
+        employees: [employees[0], employees[1]]
     ),
     Shift(
         title: "Kebab Festival",
@@ -33,7 +34,8 @@ let dummyShifts = [
         time: "07:00 – 15:00",
         role: "Building crew",
         teammates: ["AZ", "BR", "SZ", "+3"],
-        isDraft: true
+        isDraft: true,
+        employees: [employees[0], employees[1]]
     ),
     Shift(
         title: "Donner Festival",
@@ -42,7 +44,8 @@ let dummyShifts = [
         time: "08:00 – 17:00",
         role: "Trucker",
         teammates: ["AZ", "BR", "SZ", "+3"],
-        isDraft: false
+        isDraft: false,
+        employees: [employees[0], employees[1]]
     )
 ]
 
@@ -61,4 +64,18 @@ let dummyEvents = [
         time: "12:00 – 20:00",
         isDraft: true
     )
+]
+
+let dummyTasks: [Task] = [
+    Task(title: "Clock In", time: "7:01", requiresPhoto: false),
+    Task(title: "Sell 20kg of vegan kebab", time: nil, requiresPhoto: false),
+    Task(title: "Deliver to stand 3B and 5D", time: nil, requiresPhoto: false),
+    Task(title: "Pack the remaining", time: nil, requiresPhoto: false),
+    Task(title: "Take a picture of cash desk", time: nil, requiresPhoto: true),
+    Task(title: "Clock Out", time: nil, requiresPhoto: false)
+]
+
+let employees: [Employee] = [
+    Employee(initials: "BB", name: "Me", role: "Trucker", isClockedIn: true, clockInTime: "06:55"),
+    Employee(initials: "WM", name: "Willem", role: "Team Lead", isClockedIn: true, clockInTime: "08:00")
 ]

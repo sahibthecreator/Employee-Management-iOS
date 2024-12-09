@@ -24,7 +24,7 @@ class APIClient {
         endpoint: String,
         method: String = "GET",
         parameters: [String: Any]? = nil,
-        headers: [String: String]? = nil,
+        headers: [String: String]? = nil, // we can remove
         contentType: String? = "form",
         responseType: T.Type,
         completion: @escaping (Result<T, APIError>) -> Void
@@ -37,7 +37,7 @@ class APIClient {
         var request = URLRequest(url: url)
         request.httpMethod = method
         
-        // Add headers (including Bearer Token if available)
+        // Add Bearer token if exists
         if let token = UserDefaults.standard.string(forKey: "access_token") {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }

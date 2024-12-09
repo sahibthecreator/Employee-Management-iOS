@@ -13,4 +13,9 @@ extension Date {
         formatter.dateFormat = "MMM d, yyyy"
         return formatter.string(from: self)
     }
+    
+    var isToday: Bool {
+        let calendar = Calendar.current
+        return calendar.isDateInToday(self)
+    }
 }

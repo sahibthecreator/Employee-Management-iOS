@@ -75,7 +75,8 @@ struct SectionHeaderView: View {
 
 struct ShiftCardView: View {
     let shift: Shift
-
+    @State private var navigateToTaskScreen: Bool = false // State to control navigation
+    
     var body: some View {
         NavigationLink(destination: ShiftDetailScreen(shift: shift)) {
             VStack(alignment: .leading, spacing: 10) {
@@ -100,7 +101,6 @@ struct ShiftCardView: View {
                 }
                 
                 HStack {
-                    
                     VStack(alignment: .leading) {
                         Text("Teammates")
                             .font(.subheadline)
@@ -127,6 +127,18 @@ struct ShiftCardView: View {
                     }
                     
                 }
+                if shift.date.isToday {
+                   Button(action: {
+                       navigateToTaskScreen = true // Trigger navigation
+                   }) {
+                       Text("Clock In")
+                           .foregroundColor(.white)
+                           .padding()
+                           .frame(maxWidth: .infinity)
+                           .background(AppColors.secondary)
+                           .cornerRadius(10)
+                   }
+               }
             }
             .padding()
             .background(Color.white)
@@ -134,6 +146,10 @@ struct ShiftCardView: View {
             .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 5)
         }
         .buttonStyle(PlainButtonStyle())
+        .navigationDestination(isPresented: $navigateToTaskScreen) {
+            TaskScreen(shift: shift)
+                .navigationTitle(shift.title)
+        }
     }
     
     private func randomAppColor() -> Color {
