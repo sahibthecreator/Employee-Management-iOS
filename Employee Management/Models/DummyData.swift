@@ -20,7 +20,7 @@ let dummyShifts = [
     Shift(
         title: "Vegan Summer Festival",
         location: "Prinses 202, Utrecht",
-        date: createDate(year: 2024, month: 12, day: 9),
+        date: createDate(year: 2024, month: 12, day: 10),
         time: "07:00 – 15:00",
         role: "Trucker",
         teammates: ["AZ", "BR", "SZ", "+3"],

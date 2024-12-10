@@ -19,26 +19,29 @@ struct TaskScreen: View {
                 // Shift Details
                 VStack(alignment: .center, spacing: 5) {
                     Text(shift.title)
-                        .font(.largeTitle)
+                        .font(.primary())
                         .fontWeight(.bold)
                         .multilineTextAlignment(.center)
 
                     HStack(spacing: 10) {
-                        Image(systemName: "location.fill")
-                            .foregroundColor(.gray)
+                        Image("location-icon")
+                            .resizable()
+                            .frame(width: 24, height: 24)
                         Text(shift.location)
                             .foregroundColor(.gray)
                             .font(.subheadline)
                     }
 
                     HStack(spacing: 10) {
-                        Image(systemName: "clock.fill")
-                            .foregroundColor(.gray)
+                        Image("time-icon")
+                            .resizable()
+                            .frame(width: 20, height: 20)
                         Text("\(shift.time)")
                             .foregroundColor(.gray)
                             .font(.subheadline)
-                        Image(systemName: "clock.fill")
-                            .foregroundColor(.gray)
+                        Image("role-icon")
+                            .resizable()
+                            .frame(width: 24, height: 24)
                         Text(shift.role)
                             .foregroundColor(.gray)
                             .font(.subheadline)
@@ -50,7 +53,7 @@ struct TaskScreen: View {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack {
                         Text("TASK LIST")
-                            .font(.headline)
+                            .font(.primary(size: 24))
                             .fontWeight(.bold)
                         Spacer()
                         HStack {
@@ -85,6 +88,7 @@ struct TaskScreen: View {
             }
             .padding()
         }
+        .background(AppColors.bg)
     }
 
     private func markTaskAsDone(at index: Int) {

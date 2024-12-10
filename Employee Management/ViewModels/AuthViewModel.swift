@@ -13,55 +13,58 @@ class AuthViewModel: ObservableObject {
     @Published var password: String = ""
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
-    @Published var isAuthenticated: Bool = true
+    @Published var isAuthenticated: Bool = false // Default to false
     
     init() {
-        if let _ = UserDefaults.standard.string(forKey: "access_token") {
+        // Check if an access token exists in Keychain
+        if let _ = KeychainService.shared.get("access_token") {
             self.isAuthenticated = true
         }
     }
     
-    func login() {
+    func login() async {
         errorMessage = nil
         isLoading = true
         
         let parameters = ["username": email, "password": password]
         
-        // add async await!!
-        // optional but we can add service layer
-        APIClient.shared.request(
-            endpoint: "auth/login",
-            method: "POST",
-            parameters: parameters,
-            headers: nil,
-            contentType: "form",
-            responseType: LoginResponse.self
-        ) { [weak self] result in
+        do {
+            let response: LoginResponse = try await APIClient.shared.requestAsync(
+                endpoint: "auth/login",
+                method: "POST",
+                parameters: parameters,
+                contentType: "form",
+                responseType: LoginResponse.self
+            )
+            
+            KeychainService.shared.set(response.access_token, forKey: "access_token")
+            
             DispatchQueue.main.async {
-                self?.isLoading = false
-                switch result {
-                case .success(let response):
-                    // Save the token and authenticate the user
-                    UserDefaults.standard.set(response.access_token, forKey: "access_token") // save into keychain instead user defaults
-                    self?.isAuthenticated = true
-                    
-                case .failure(let error):
-                    switch error {
-                    case .serverError(400):
-                        self?.errorMessage = "Missing username or password."
-                    case .serverError(401):
-                        self?.errorMessage = "Invalid email or password."
-                    default:
-                        print(error)
-                        self?.errorMessage = error.localizedDescription
-                    }
+                self.isAuthenticated = true
+                self.isLoading = false
+            }
+        } catch let error as APIError {
+            DispatchQueue.main.async {
+                self.isLoading = false
+                switch error {
+                case .serverError(400):
+                    self.errorMessage = "Missing username or password."
+                case .serverError(401):
+                    self.errorMessage = "Invalid email or password."
+                default:
+                    self.errorMessage = "Something went wrong. Please try again."
                 }
+            }
+        } catch {
+            DispatchQueue.main.async {
+                self.isLoading = false
+                self.errorMessage = error.localizedDescription
             }
         }
     }
     
     func logOut() {
-        UserDefaults.standard.removeObject(forKey: "access_token")
+        KeychainService.shared.remove("access_token")
         isAuthenticated = false
     }
 }

@@ -63,7 +63,9 @@ struct LoginScreen: View {
                         
                         // Login Button
                         Button(action: {
-                            viewModel.login()
+                            _Concurrency.Task {
+                                await viewModel.login()
+                            }
                         }) {
                             if viewModel.isLoading {
                                 ProgressView()
