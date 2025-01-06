@@ -39,12 +39,15 @@ struct LoginScreen: View {
                                 .foregroundColor(.white)
                                 .font(AppFonts.primary(size: 13))
                             )
-                            SecureField("Password", 
+                            .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
+                            .keyboardType(.emailAddress)
+                            TextField("Password",
                                         text: $viewModel.password,
                                         prompt: Text("Password")
                                 .foregroundColor(.white)
                                 .font(AppFonts.primary(size: 13))
                             )
+                            .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
                         }
                         .padding()
                         .background(Color.clear)
@@ -63,9 +66,7 @@ struct LoginScreen: View {
                         
                         // Login Button
                         Button(action: {
-                            _Concurrency.Task {
-                                await viewModel.login()
-                            }
+                            viewModel.signIn()
                         }) {
                             if viewModel.isLoading {
                                 ProgressView()
