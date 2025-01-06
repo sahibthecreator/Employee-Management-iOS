@@ -10,7 +10,7 @@ import Foundation
 class APIClient {
     static let shared = APIClient()
     
-    private let baseURL = URL(string: "http://localhost:5136")!
+    private let defaultBaseURL = URL(string: "http://localhost:3007")!  // Fallback default base URL
     private var session: URLSession
     
     private init() {
@@ -25,21 +25,28 @@ class APIClient {
         method: String = "GET",
         parameters: [String: Any]? = nil,
         contentType: String = "form",
-        responseType: T.Type
+        responseType: T.Type,
+        headers: [String: String]? = nil,
+        baseURL: URL? = nil  // Allow passing custom baseURL
     ) async throws -> T {
-        guard let url = URL(string: endpoint, relativeTo: baseURL) else {
+        let base = baseURL ?? defaultBaseURL  // Use provided baseURL or fallback
+        guard let url = URL(string: endpoint, relativeTo: base) else {
             throw APIError.invalidURL
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = method
         
-        // Add Bearer token from Keychain if available
-        if let token = KeychainService.shared.get("access_token") {
+        // Attach headers (including Bearer token if exists)
+        if let headers = headers {
+            headers.forEach { key, value in
+                request.setValue(value, forHTTPHeaderField: key)
+            }
+        } else if let token = KeychainService.shared.get("access_token") {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         
-        // Handle parameters encoding
+        // Encode parameters (form or json)
         if let parameters = parameters {
             if contentType == "form" {
                 request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
@@ -52,6 +59,7 @@ class APIClient {
             }
         }
         
+        // Perform request
         let (data, response) = try await session.data(for: request)
         
         guard let httpResponse = response as? HTTPURLResponse else {

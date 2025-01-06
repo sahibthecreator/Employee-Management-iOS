@@ -33,9 +33,9 @@ struct LoginScreen: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                         // Email and Password fields
                         Group {
-                            TextField("Email Address", 
-                                      text: $viewModel.email,
-                                      prompt: Text("Email Address")
+                            TextField("Username",
+                                      text: $viewModel.username,
+                                      prompt: Text("Username")
                                 .foregroundColor(.white)
                                 .font(AppFonts.primary(size: 13))
                             )
