@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		841757F42D2C335E007C49B1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 841757F32D2C335E007C49B1 /* GoogleService-Info.plist */; };
-		841757F72D2C3448007C49B1 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 841757F62D2C3448007C49B1 /* FirebaseAuth */; };
 		841757F92D2C3448007C49B1 /* FirebaseAuthCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 841757F82D2C3448007C49B1 /* FirebaseAuthCombine-Community */; };
 		841757FB2D2C3448007C49B1 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 841757FA2D2C3448007C49B1 /* FirebaseCore */; };
 		841757FD2D2C3448007C49B1 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 841757FC2D2C3448007C49B1 /* FirebaseDatabase */; };
@@ -48,6 +47,9 @@
 		84D91F8B2D2D5654001201EC /* Availability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D91F8A2D2D5654001201EC /* Availability.swift */; };
 		84D91F8D2D2D6E2D001201EC /* ToastNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D91F8C2D2D6E2D001201EC /* ToastNotification.swift */; };
 		84D91F8F2D2D6F4C001201EC /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D91F8E2D2D6F4C001201EC /* Helper.swift */; };
+		84D91F9D2D2D91A6001201EC /* colby-medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84D91F9C2D2D91A6001201EC /* colby-medium.ttf */; };
+		84D91F9F2D2D91BA001201EC /* FontExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D91F9E2D2D91BA001201EC /* FontExtension.swift */; };
+		84D91FA12D2D93EC001201EC /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 84D91FA02D2D93EC001201EC /* FirebaseAuth */; };
 		84DA9A342CE60EA400B9B713 /* Employee_ManagementApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DA9A332CE60EA400B9B713 /* Employee_ManagementApp.swift */; };
 		84DA9A362CE60EA400B9B713 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DA9A352CE60EA400B9B713 /* ContentView.swift */; };
 		84DA9A382CE60EA500B9B713 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84DA9A372CE60EA500B9B713 /* Assets.xcassets */; };
@@ -93,6 +95,8 @@
 		84D91F8A2D2D5654001201EC /* Availability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Availability.swift; sourceTree = "<group>"; };
 		84D91F8C2D2D6E2D001201EC /* ToastNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastNotification.swift; sourceTree = "<group>"; };
 		84D91F8E2D2D6F4C001201EC /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
+		84D91F9C2D2D91A6001201EC /* colby-medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "colby-medium.ttf"; sourceTree = "<group>"; };
+		84D91F9E2D2D91BA001201EC /* FontExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontExtension.swift; sourceTree = "<group>"; };
 		84DA9A302CE60EA400B9B713 /* Employee Management.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Employee Management.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		84DA9A332CE60EA400B9B713 /* Employee_ManagementApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Employee_ManagementApp.swift; sourceTree = "<group>"; };
 		84DA9A352CE60EA400B9B713 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -113,8 +117,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				841757F72D2C3448007C49B1 /* FirebaseAuth in Frameworks */,
 				841758032D2C3448007C49B1 /* FirebaseFunctions in Frameworks */,
+				84D91FA12D2D93EC001201EC /* FirebaseAuth in Frameworks */,
 				841758092D2C3448007C49B1 /* FirebaseStorageCombine-Community in Frameworks */,
 				841758072D2C3448007C49B1 /* FirebaseStorage in Frameworks */,
 				841757FB2D2C3448007C49B1 /* FirebaseCore in Frameworks */,
@@ -153,6 +157,7 @@
 			children = (
 				845BF65B2CF5F70700C06EF9 /* DateExtension.swift */,
 				8417580A2D2C3CC6007C49B1 /* ColorExtension.swift */,
+				84D91F9E2D2D91BA001201EC /* FontExtension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -270,6 +275,7 @@
 		84EAA5402CEB9E560018A5FA /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				84D91F9C2D2D91A6001201EC /* colby-medium.ttf */,
 				84EAA5412CEB9E630018A5FA /* mindset-regular.ttf */,
 			);
 			path = Fonts;
@@ -292,7 +298,6 @@
 			);
 			name = "Employee Management";
 			packageProductDependencies = (
-				841757F62D2C3448007C49B1 /* FirebaseAuth */,
 				841757F82D2C3448007C49B1 /* FirebaseAuthCombine-Community */,
 				841757FA2D2C3448007C49B1 /* FirebaseCore */,
 				841757FC2D2C3448007C49B1 /* FirebaseDatabase */,
@@ -302,6 +307,7 @@
 				841758042D2C3448007C49B1 /* FirebaseRemoteConfig */,
 				841758062D2C3448007C49B1 /* FirebaseStorage */,
 				841758082D2C3448007C49B1 /* FirebaseStorageCombine-Community */,
+				84D91FA02D2D93EC001201EC /* FirebaseAuth */,
 			);
 			productName = "Employee Management";
 			productReference = 84DA9A302CE60EA400B9B713 /* Employee Management.app */;
@@ -351,6 +357,7 @@
 				841757F42D2C335E007C49B1 /* GoogleService-Info.plist in Resources */,
 				84DA9A3B2CE60EA500B9B713 /* Preview Assets.xcassets in Resources */,
 				84EAA5422CEB9EE10018A5FA /* mindset-regular.ttf in Resources */,
+				84D91F9D2D2D91A6001201EC /* colby-medium.ttf in Resources */,
 				84DA9A382CE60EA500B9B713 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -386,6 +393,7 @@
 				84E5318E2CE777CA002EC7FB /* AuthViewModel.swift in Sources */,
 				845BF6562CF5F0CA00C06EF9 /* WeekSelector.swift in Sources */,
 				849201952CF7403F003F0E3B /* AvailabilityViewModel.swift in Sources */,
+				84D91F9F2D2D91BA001201EC /* FontExtension.swift in Sources */,
 				84326CE52CF4A56800530CD6 /* ProfileScreen.swift in Sources */,
 				8417580B2D2C3CC6007C49B1 /* ColorExtension.swift in Sources */,
 				84D91F8D2D2D6E2D001201EC /* ToastNotification.swift in Sources */,
@@ -620,11 +628,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		841757F62D2C3448007C49B1 /* FirebaseAuth */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 841757F52D2C3448007C49B1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAuth;
-		};
 		841757F82D2C3448007C49B1 /* FirebaseAuthCombine-Community */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 841757F52D2C3448007C49B1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
@@ -669,6 +672,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 841757F52D2C3448007C49B1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseStorageCombine-Community";
+		};
+		84D91FA02D2D93EC001201EC /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 841757F52D2C3448007C49B1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
