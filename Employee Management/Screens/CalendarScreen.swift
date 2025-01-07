@@ -18,40 +18,56 @@ struct CalendarScreen: View {
     var body: some View {
         VStack(spacing: 10) {
             Header()
+            
             // Tab Navigation
             CalendarTabSelector(selectedTab: $viewModel.selectedTab)
-
             
+            // Calendar View (Week or Full Month)
             if viewModel.isFullMonthView {
-               FullCalendar(
-                   selectedDate: $viewModel.currentWeek,
-                   onSelectWeek: viewModel.selectWeek
-               )
-           } else {
-               WeekSelector(
-                   currentWeek: viewModel.currentWeek,
-                   onPreviousWeek: viewModel.previousWeek,
-                   onNextWeek: viewModel.nextWeek,
-                   onToggleFullMonthView: { viewModel.isFullMonthView.toggle() }
-               )
-           }
+                FullCalendar(
+                    selectedDate: $viewModel.currentWeek,
+                    onSelectWeek: viewModel.selectWeek
+                )
+            } else {
+                WeekSelector(
+                    currentWeek: viewModel.currentWeek,
+                    onPreviousWeek: viewModel.previousWeek,
+                    onNextWeek: viewModel.nextWeek,
+                    onToggleFullMonthView: { viewModel.isFullMonthView.toggle() }
+                )
+            }
             
-            // Shifts List
+            // Display Loading or Content
             ScrollView {
                 VStack(spacing: 10) {
                     if viewModel.selectedTab == 0 {
-                        // Display Shifts
-                        ForEach(viewModel.shifts, id: \.title) { shift in
-                            ShiftCardView(
-                               shift: shift
-                            )
+                        if viewModel.isShiftsLoading {
+                            ProgressView("Loading shifts...")
+                        } else if let shiftError = viewModel.shiftErrorMessage {
+                            Text(shiftError)
+                                .foregroundColor(.red)
+                        } else if viewModel.shifts.isEmpty {
+                            Text("No shifts for this week.")
+                                .foregroundColor(.gray)
+                        } else {
+                            ForEach(viewModel.shifts) { shift in
+                                ShiftCard(shift: shift)
+                            }
                         }
-                    } else {
-                        // Display Events
-                        ForEach(viewModel.events, id: \.title) { event in
-                            EventCardView(
-                                event: event
-                            )
+                    }
+                    else {
+                        if viewModel.isEventsLoading {
+                            ProgressView("Loading events...")
+                        } else if let eventError = viewModel.eventErrorMessage {
+                            Text(eventError)
+                                .foregroundColor(.red)
+                        } else if viewModel.events.isEmpty {
+                            Text("No upcoming events.")
+                                .foregroundColor(.gray)
+                        } else {
+                            ForEach(viewModel.events) { event in
+                                EventCard(event: event)
+                            }
                         }
                     }
                 }

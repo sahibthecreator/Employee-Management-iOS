@@ -9,6 +9,8 @@ import Foundation
 import SwiftUI
 
 struct HomeScreen: View {
+    @StateObject private var viewModel = HomeViewModel()
+    
     var body: some View {
         VStack(spacing: 0) {
             Header()
@@ -19,12 +21,20 @@ struct HomeScreen: View {
                     // Upcoming Shifts
                     SectionHeaderView(title: "Upcoming Shifts")
                     VStack(spacing: 10) {
-                        ShiftCardView(
-                            shift: dummyShifts[0]
-                        )
-                        ShiftCardView(
-                            shift: dummyShifts[1]
-                        )
+                        if viewModel.isLoading {
+                            ProgressView("Loading Shifts...")
+                                .padding()
+                        } else if viewModel.shifts.isEmpty {
+                            Text("No upcoming shifts.")
+                                .foregroundColor(.gray)
+                                .padding()
+                        } else {
+                            VStack(spacing: 10) {
+                                ForEach(viewModel.shifts) { shift in
+                                    ShiftCard(shift: shift)
+                                }
+                            }
+                        }
                     }
                     Button(action: {}) {
                         Text("🚫 Unavailable?")
@@ -39,9 +49,22 @@ struct HomeScreen: View {
                     // Upcoming Events
                     SectionHeaderView(title: "Upcoming Events")
                     VStack(spacing: 10) {
-                        EventCardView(
-                            event: dummyEvents[0]
-                        )
+                        if viewModel.eventsIsLoading {
+                           ProgressView("Loading Events...")
+                               .padding()
+                       } else if let error = viewModel.eventsErrorMessage {
+                           Text(error)
+                               .foregroundColor(.red)
+                               .padding()
+                       } else if viewModel.unassignedEvents.isEmpty {
+                           Text("No upcoming events.")
+                               .foregroundColor(.gray)
+                               .padding()
+                       } else {
+                           ForEach(viewModel.unassignedEvents) { event in
+                               EventCard(event: event)
+                           }
+                       }
                     }
                     Button(action: {}) {
                         Text("💼 See more")
@@ -108,7 +131,7 @@ struct ShiftCardView: View {
                         HStack(spacing: -10) {
                             ForEach(shift.teammates, id: \.self) { teammate in
                                 Circle()
-                                    .fill(randomAppColor())
+                                    .fill(Color.randomAppColor())
                                     .frame(width: 30, height: 30)
                                     .overlay(
                                         Text(teammate)
@@ -150,21 +173,6 @@ struct ShiftCardView: View {
             TaskScreen(shift: shift)
                 .navigationTitle(shift.title)
         }
-    }
-    
-    private func randomAppColor() -> Color {
-        let colors = [
-            AppColors.primary, // Original Primary
-            AppColors.secondary, // Original Secondary
-            AppColors.tertiary, // Original Tertiary
-            Color(hex: "662C83"), // Extra Original
-            Color(hex: "9B59B6"), // Soft Purple
-            Color(hex: "8E44AD"), // Deep Violet
-            Color(hex: "F39CBB"), // Soft Pink
-            Color(hex: "D988BC"), // Mauve
-            Color(hex: "D354A1")  // Vibrant Magenta
-        ]
-        return colors.randomElement() ?? AppColors.primary
     }
 }
 

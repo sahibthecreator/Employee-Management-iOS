@@ -7,22 +7,125 @@
 
 import Foundation
 
-class CalendarViewModel: ObservableObject {
-    @Published var selectedTab: Int = 0 // 0: My Schedule, 1: Upcoming Events
-    @Published var currentWeek: Date = Date() // Start of the current week
-    @Published var isFullMonthView: Bool = false // Toggle for full month calendar
-    @Published var shifts: [Shift] = []
-    @Published var events: [Event] = []
+import FirebaseFirestore
 
+class CalendarViewModel: ObservableObject {
+    @Published var selectedTab: Int = 0  // 0: My Schedule, 1: Upcoming Events
+    @Published var currentWeek: Date = Date()  // Start of the current week
+    @Published var isFullMonthView: Bool = false
+    @Published var shifts: [ShiftDTO] = []
+    @Published var events: [EventDTO] = []
+    
+    @Published var isShiftsLoading: Bool = false
+    @Published var shiftErrorMessage: String?
+    
+    @Published var isEventsLoading: Bool = false
+    @Published var eventErrorMessage: String?
+
+    private var userService = UserService()
+    private var db = Firestore.firestore()
+    
     init() {
         fetchContent(for: currentWeek)
     }
 
-    // Fetch data based on the current week's date range
+    // Fetch shifts and events based on the current date range
     func fetchContent(for startDate: Date) {
+        isShiftsLoading = true
+        shiftErrorMessage = nil
+        
         let range = dateRange(for: startDate)
-        shifts = dummyShifts.filter { range.contains($0.date) }
-        events = dummyEvents.filter { range.contains($0.date) }
+        
+        if(selectedTab == 0) {
+            fetchShifts(in: range)
+        }
+        else {
+            fetchUnassignedEvents(in: range)
+        }
+    }
+
+    private func fetchShifts(in range: ClosedRange<Date>) {
+        db.collection("shifts")
+          .whereField("startTime", isGreaterThanOrEqualTo: Timestamp(date: range.lowerBound))
+          .whereField("startTime", isLessThanOrEqualTo: Timestamp(date: range.upperBound))
+          .getDocuments { [weak self] snapshot, error in
+              DispatchQueue.main.async {
+                  if let error = error {
+                      self?.shiftErrorMessage = "Failed to fetch shifts: \(error.localizedDescription)"
+                      return
+                  }
+                  
+                  let fetchedShifts = snapshot?.documents.compactMap { doc in
+                      try? doc.data(as: ShiftDTO.self)
+                  } ?? []
+                  
+                  self?.shifts = fetchedShifts
+                  
+                  // Fetch event details for each shift
+                  for (index, shift) in fetchedShifts.enumerated() {
+                      self?.fetchEventDetails(for: shift, at: index)
+                      self?.fetchTeammates(for: shift, at: index)
+                  }
+                  self?.isShiftsLoading = false
+              }
+          }
+    }
+    
+    private func fetchEventDetails(for shift: ShiftDTO, at index: Int) {
+        db.collection("events").document(shift.eventId).getDocument { [weak self] document, error in
+            DispatchQueue.main.async {
+                guard let event = try? document?.data(as: EventDTO.self) else {
+                    return
+                }
+                
+                self?.shifts[index].event = event
+            }
+        }
+    }
+    
+    private func fetchTeammates(for shift: ShiftDTO, at index: Int) {
+        let teammateIds = shift.assignedUserIds
+
+        var fetchedTeammates: [String] = []
+
+        let dispatchGroup = DispatchGroup()
+
+        for userId in teammateIds {
+            dispatchGroup.enter()
+            userService.getUserById(userId: userId) { [weak self] user in
+                if let fullName = user?.fullName {
+                    fetchedTeammates.append(fullName)
+                }
+                dispatchGroup.leave()
+            }
+        }
+
+        dispatchGroup.notify(queue: .main) {
+            self.shifts[index].teammates = fetchedTeammates
+        }
+    }
+
+    private func fetchUnassignedEvents(in range: ClosedRange<Date>) {
+        isEventsLoading = true
+        
+        db.collection("events")
+          .whereField("startTime", isGreaterThanOrEqualTo: Timestamp(date: range.lowerBound))
+          .whereField("startTime", isLessThanOrEqualTo: Timestamp(date: range.upperBound))
+          .whereField("shiftsAssigned", isEqualTo: false)  // only unassigned events
+          .getDocuments { [weak self] snapshot, error in
+              DispatchQueue.main.async {
+                  self?.isEventsLoading = false
+                  if let error = error {
+                      self?.eventErrorMessage = "Failed to fetch events: \(error.localizedDescription)"
+                      print(error)
+                      return
+                  }
+                  
+                  self?.events = snapshot?.documents.compactMap { doc in
+                      try? doc.data(as: EventDTO.self)
+                  } ?? []
+              }
+          }
     }
 
     // Navigate to the previous week
@@ -44,13 +147,22 @@ class CalendarViewModel: ObservableObject {
         fetchContent(for: currentWeek)
     }
 
-    // Helper: Calculate the date range for a week
+    // Helper: Calculate the date range for a week or full month
     private func dateRange(for startDate: Date) -> ClosedRange<Date> {
-        let startOfWeek = Calendar.current.startOfWeek(for: startDate)
-        let endOfWeek = Calendar.current.date(byAdding: .day, value: 6, to: startOfWeek)!
-        return startOfWeek...endOfWeek
+        let calendar = Calendar.current
+        
+        if isFullMonthView {
+            let startOfMonth = calendar.dateInterval(of: .month, for: startDate)!.start
+            let endOfMonth = calendar.dateInterval(of: .month, for: startDate)!.end.addingTimeInterval(-1)
+            return startOfMonth...endOfMonth
+        } else {
+            let startOfWeek = calendar.startOfWeek(for: startDate)
+            let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek)!
+            return startOfWeek...endOfWeek
+        }
     }
 }
+
 
 // Extension for Calendar to calculate the start of a week
 extension Calendar {
