@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 struct HomeScreen: View {
+    @StateObject private var viewModel = HomeViewModel()
     var body: some View {
         VStack(spacing: 0) {
             Header()
@@ -19,12 +20,22 @@ struct HomeScreen: View {
                     // Upcoming Shifts
                     SectionHeaderView(title: "Upcoming Shifts")
                     VStack(spacing: 10) {
-                        ShiftCardView(
-                            shift: dummyShifts[0]
-                        )
-                        ShiftCardView(
-                            shift: dummyShifts[1]
-                        )
+                        if viewModel.isLoading {
+                            ProgressView("Loading shifts...")
+                                .padding()
+                        } else if let errorMessage = viewModel.errorMessage {
+                            Text(errorMessage)
+                                .foregroundColor(.red)
+                                .padding()
+                        }
+                        else {
+                            ForEach(viewModel.shifts) { shift in
+                                ShiftCard(
+                                    shift: shift,
+                                    event: viewModel.events[shift.id]
+                                )
+                            }
+                        }
                     }
                     Button(action: {}) {
                         Text("🚫 Unavailable?")
@@ -55,10 +66,13 @@ struct HomeScreen: View {
                 }
                 .padding()
             }
-            .padding(.top, 6) // Hardcoded solution
+            .padding(.top, 6)
         }
         .background(Color(UIColor.systemGray6))
         .ignoresSafeArea(edges: .bottom)
+        .task {
+            await viewModel.loadShifts()
+        }
     }
 }
 

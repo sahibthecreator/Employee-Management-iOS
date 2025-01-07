@@ -19,3 +19,13 @@ extension Date {
         return calendar.isDateInToday(self)
     }
 }
+
+extension DateFormatter {
+    static let iso8601: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"  // ISO 8601
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter
+    }()
+}

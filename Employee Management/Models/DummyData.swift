@@ -79,3 +79,5 @@ let employees: [Employee] = [
     Employee(initials: "BB", name: "Me", role: "Trucker", isClockedIn: true, clockInTime: "06:55"),
     Employee(initials: "WM", name: "Willem", role: "Team Lead", isClockedIn: true, clockInTime: "08:00")
 ]
+
+let employeeId = "2dc142cb-c95d-4ab5-a258-1d04c2d6c244"
