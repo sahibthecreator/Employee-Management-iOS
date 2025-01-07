@@ -67,7 +67,7 @@ struct SectionHeaderView: View {
 
     var body: some View {
         Text(title)
-            .font(.headline)
+            .font(.primary(size: 20))
             .fontWeight(.bold)
             .foregroundColor(.black)
     }
