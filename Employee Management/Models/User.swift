@@ -14,7 +14,7 @@ struct UserDTO: Identifiable, Decodable {
     var email: String
     var phone: String
     
-    var userInitials: String {
+    var initials: String {
         let names = fullName.split(separator: " ")
         let initials = names.compactMap { $0.first?.uppercased() }.joined()
         return String(initials.prefix(2))  // Ensure only two initials are used

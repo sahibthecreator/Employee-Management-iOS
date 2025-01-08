@@ -23,7 +23,7 @@ struct ProfileScreen: View {
                         .fill(AppColors.tertiary)
                         .frame(width: 100, height: 100)
                         .overlay(
-                            Text(user.userInitials)
+                            Text(user.initials)
                                 .font(AppFonts.primary(size: 50))
                                 .fontWeight(.bold)
                                 .foregroundColor(AppColors.primary)

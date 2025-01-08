@@ -124,11 +124,23 @@ class HomeViewModel: ObservableObject {
 
         for (i, user) in updatedAssignedUsers.enumerated() {
             dispatchGroup.enter()
-            userService.getUserById(userId: user.userId) { [weak self] fetchedUser in
-                if let fetchedUser = fetchedUser {
-                    updatedAssignedUsers[i].fullName = fetchedUser.fullName
+            
+            // Use getCurrentUser to handle caching and fresh fetch logic
+            if user.userId == Auth.auth().currentUser?.uid {
+                userService.getCurrentUser { [weak self] cachedUser in
+                    if let cachedUser = cachedUser {
+                        updatedAssignedUsers[i].fullName = cachedUser.fullName
+                    }
+                    dispatchGroup.leave()
                 }
-                dispatchGroup.leave()
+            } else {
+                // Fetch other users by ID
+                userService.getUserById(userId: user.userId) { [weak self] fetchedUser in
+                    if let fetchedUser = fetchedUser {
+                        updatedAssignedUsers[i].fullName = fetchedUser.fullName
+                    }
+                    dispatchGroup.leave()
+                }
             }
         }
 

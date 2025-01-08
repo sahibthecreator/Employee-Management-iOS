@@ -9,8 +9,10 @@ import Foundation
 import SwiftUI
 
 struct Header: View {
+    @StateObject private var viewModel = HeaderViewModel()
+    
     var body: some View {
-        ZStack(alignment: .bottom) {
+        ZStack(alignment: .center) {
             AppColors.primary
                 .clipShape(
                     RoundedCornerShape(corners: [.bottomLeft, .bottomRight], radius: 20)
@@ -18,17 +20,17 @@ struct Header: View {
                 .ignoresSafeArea()
             
             VStack(alignment: .leading) {
-                Text("Good Morning")
+                Text(viewModel.greeting)
                     .foregroundColor(.white)
                     .font(AppFonts.primary(size: 16))
                     .fontWeight(.bold)
                     
-                Text("Bird Van Burger")
+                Text(viewModel.fullName)
                     .foregroundColor(.white)
                     .font(AppFonts.primary(size: 24))
                     .fontWeight(.bold)
 
-                Text("23 Sep, Monday")
+                Text(viewModel.currentDate)
                     .foregroundColor(.white)
                     .font(.caption2)
             }
@@ -41,7 +43,7 @@ struct Header: View {
                 Circle()
                     .fill(AppColors.tertiary)
                     .frame(width: 50, height: 50)
-                    .overlay(Text("BB").foregroundColor(AppColors.primary).font(AppFonts.primary()))
+                    .overlay(Text(viewModel.initials).foregroundColor(AppColors.primary).font(AppFonts.primary()))
                     .padding()
             }
         }
