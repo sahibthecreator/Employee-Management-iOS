@@ -26,9 +26,12 @@ struct ShiftCard: View {
                 }
                 Spacer()
                 VStack(alignment: .trailing) {
-                    Text(shift.startTime.formatted(date: .abbreviated, time: .shortened))
-                                            .font(.subheadline)
-                                            .fontWeight(.bold)
+                    Text(shift.startTime.formattedDate())
+                        .font(.primary(size: 16))
+                        .fontWeight(.bold)
+                    Text("\(shift.startTime.formattedTime()) - \(shift.endTime.formattedTime())")
+                        .font(.secondary(size: 14))
+                        .foregroundColor(.gray)
                 }
             }
             

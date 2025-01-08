@@ -20,7 +20,7 @@ struct HomeScreen: View {
                     // Upcoming Shifts
                     SectionHeaderView(title: "Upcoming Shifts")
                     VStack(spacing: 10) {
-                        if viewModel.isLoading {
+                        if viewModel.isLoadingShifts {
                             ProgressView("Loading shifts...")
                                 .padding()
                         } else if let errorMessage = viewModel.errorMessage {
@@ -32,7 +32,7 @@ struct HomeScreen: View {
                             ForEach(viewModel.shifts) { shift in
                                 ShiftCard(
                                     shift: shift,
-                                    event: viewModel.events[shift.id]
+                                    event: viewModel.shiftEvents[shift.id]
                                 )
                             }
                         }
@@ -50,9 +50,13 @@ struct HomeScreen: View {
                     // Upcoming Events
                     SectionHeaderView(title: "Upcoming Events")
                     VStack(spacing: 10) {
-                        EventCardView(
-                            event: dummyEvents[0]
-                        )
+                        if viewModel.isLoadingEvents {
+                            ProgressView("Loading Events...")
+                        } else {
+                            ForEach(viewModel.events) { event in
+                                EventCard(event: event)
+                            }
+                        }
                     }
                     Button(action: {}) {
                         Text("💼 See more")
@@ -71,7 +75,7 @@ struct HomeScreen: View {
         .background(Color(UIColor.systemGray6))
         .ignoresSafeArea(edges: .bottom)
         .task {
-            await viewModel.loadShifts()
+            await viewModel.loadShiftsAndEvents()
         }
     }
 }

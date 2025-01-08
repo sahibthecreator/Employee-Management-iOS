@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct EventDTO: Decodable {
-    let partitionKey: String
+struct EventDTO: Decodable, Identifiable {
+    let id: String
     let rowKey: String
     let startTime: Date
     let endTime: Date
@@ -19,11 +19,11 @@ struct EventDTO: Decodable {
     let status: String
     let person: PersonDTO
     let note: String
-    let shiftIDs: [String]
+    let shiftIDs: [String]?
     let roleIDs: [String]?
     
     enum CodingKeys: String, CodingKey {
-        case partitionKey
+        case id = "partitionKey"
         case rowKey
         case startTime
         case endTime
@@ -41,7 +41,7 @@ struct EventDTO: Decodable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
-        self.partitionKey = try container.decode(String.self, forKey: .partitionKey)
+        self.id = try container.decode(String.self, forKey: .id)
         self.rowKey = try container.decode(String.self, forKey: .rowKey)
         self.address = try container.decode(String.self, forKey: .address)
         self.venue = try container.decode(String.self, forKey: .venue)
@@ -50,7 +50,6 @@ struct EventDTO: Decodable {
         self.status = try container.decode(String.self, forKey: .status)
         self.person = try container.decode(PersonDTO.self, forKey: .person)
         self.note = try container.decode(String.self, forKey: .note)
-        self.shiftIDs = try container.decode([String].self, forKey: .shiftIDs)
         self.roleIDs = try container.decodeIfPresent([String].self, forKey: .roleIDs)
         
         // Convert startTime and endTime from String to Date
@@ -59,6 +58,17 @@ struct EventDTO: Decodable {
         
         self.startTime = DateFormatter.iso8601.date(from: startTimeString) ?? Date()
         self.endTime = DateFormatter.iso8601.date(from: endTimeString) ?? Date()
+        
+        if let shiftIDsArray = try? container.decode([String]?.self, forKey: .shiftIDs) {
+            self.shiftIDs = shiftIDsArray
+        } else {
+            self.shiftIDs = nil
+        }
     }
 }
 
+struct EventResponseDTO: Decodable {
+    let success: Bool
+    let message: String
+    let data: [EventDTO]
+}
