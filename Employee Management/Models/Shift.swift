@@ -23,6 +23,18 @@ struct ShiftDTO: Identifiable, Decodable {
 struct AssignedUser: Codable {
     var userId: String
     var role: String
+    var fullName: String?
     var clockInTime: Date?
     var clockOutTime: Date?
+    
+    
+    var initials: String {
+        let nameComponents = fullName?.split(separator: " ") ?? []
+        return nameComponents
+            .compactMap { $0.first }
+            .prefix(2)
+            .map { String($0) }
+            .joined()
+            .uppercased()
+    }
 }

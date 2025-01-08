@@ -37,7 +37,7 @@ class HomeViewModel: ObservableObject {
         
         isLoading = true
         errorMessage = nil
-        
+        print(userId)
         db.collection("shifts")
           .whereField("assignedUserIds", arrayContains: userId)
           .order(by: "startTime")
@@ -57,7 +57,7 @@ class HomeViewModel: ObservableObject {
                   
                   let fetchedShifts = documents.compactMap { try? $0.data(as: ShiftDTO.self) }
                   self?.shifts = fetchedShifts
-                  
+                  print(fetchedShifts)
                   for (index, shift) in fetchedShifts.enumerated() {
                       self?.fetchEventForShift(shift, at: index)
                       self?.fetchTeammates(for: shift, at: index)
@@ -117,26 +117,23 @@ class HomeViewModel: ObservableObject {
             }
         }
     }
-    
+
     private func fetchTeammates(for shift: ShiftDTO, at index: Int) {
-        let teammateIds = shift.assignedUserIds
-
-        var fetchedTeammates: [String] = []
-
+        var updatedAssignedUsers = shift.assignedUsers
         let dispatchGroup = DispatchGroup()
 
-        for userId in teammateIds {
+        for (i, user) in updatedAssignedUsers.enumerated() {
             dispatchGroup.enter()
-            userService.getUserById(userId: userId) { [weak self] user in
-                if let fullName = user?.fullName {
-                    fetchedTeammates.append(fullName)
+            userService.getUserById(userId: user.userId) { [weak self] fetchedUser in
+                if let fetchedUser = fetchedUser {
+                    updatedAssignedUsers[i].fullName = fetchedUser.fullName
                 }
                 dispatchGroup.leave()
             }
         }
 
         dispatchGroup.notify(queue: .main) {
-            self.shifts[index].teammates = fetchedTeammates
+            self.shifts[index].assignedUsers = updatedAssignedUsers
         }
     }
 }

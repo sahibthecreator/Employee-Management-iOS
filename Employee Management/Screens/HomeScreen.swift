@@ -96,85 +96,85 @@ struct SectionHeaderView: View {
     }
 }
 
-struct ShiftCardView: View {
-    let shift: Shift
-    @State private var navigateToTaskScreen: Bool = false // State to control navigation
-    
-    var body: some View {
-        NavigationLink(destination: ShiftDetailScreen(shift: shift)) {
-            VStack(alignment: .leading, spacing: 10) {
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text(shift.title)
-                            .font(.headline)
-                            .fontWeight(.bold)
-                        Text(shift.location)
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                    }
-                    Spacer()
-                    VStack(alignment: .trailing) {
-                        Text(shift.date.formatted) // Use formatted date
-                            .font(.subheadline)
-                            .fontWeight(.bold)
-                        Text(shift.time)
-                            .font(.subheadline)
-                            .foregroundColor(shift.isDraft ?? false ? .red : .gray)
-                    }
-                }
-                
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text("Teammates")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                        HStack(spacing: -10) {
-                            ForEach(shift.teammates, id: \.self) { teammate in
-                                Circle()
-                                    .fill(Color.randomAppColor())
-                                    .frame(width: 30, height: 30)
-                                    .overlay(
-                                        Text(teammate)
-                                            .font(.caption)
-                                            .foregroundColor(.white)
-                                    )
-                            }
-                        }
-                    }
-                    
-                    HStack {
-                        Spacer()
-                        Text(shift.role)
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                    }
-                    
-                }
-                if shift.date.isToday {
-                   Button(action: {
-                       navigateToTaskScreen = true // Trigger navigation
-                   }) {
-                       Text("Clock In")
-                           .foregroundColor(.white)
-                           .padding()
-                           .frame(maxWidth: .infinity)
-                           .background(AppColors.secondary)
-                           .cornerRadius(10)
-                   }
-               }
-            }
-            .padding()
-            .background(Color.white)
-            .cornerRadius(10)
-            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 5)
-        }
-        .buttonStyle(PlainButtonStyle())
-        .navigationDestination(isPresented: $navigateToTaskScreen) {
-            TaskScreen(shift: shift)
-                .navigationTitle(shift.title)
-        }
-    }
-}
+//struct ShiftCardView: View {
+//    let shift: Shift
+//    @State private var navigateToTaskScreen: Bool = false // State to control navigation
+//    
+//    var body: some View {
+//        NavigationLink(destination: ShiftDetailScreen(shift: shift)) {
+//            VStack(alignment: .leading, spacing: 10) {
+//                HStack {
+//                    VStack(alignment: .leading) {
+//                        Text(shift.title)
+//                            .font(.headline)
+//                            .fontWeight(.bold)
+//                        Text(shift.location)
+//                            .font(.subheadline)
+//                            .foregroundColor(.gray)
+//                    }
+//                    Spacer()
+//                    VStack(alignment: .trailing) {
+//                        Text(shift.date.formatted) // Use formatted date
+//                            .font(.subheadline)
+//                            .fontWeight(.bold)
+//                        Text(shift.time)
+//                            .font(.subheadline)
+//                            .foregroundColor(shift.isDraft ?? false ? .red : .gray)
+//                    }
+//                }
+//                
+//                HStack {
+//                    VStack(alignment: .leading) {
+//                        Text("Teammates")
+//                            .font(.subheadline)
+//                            .foregroundColor(.gray)
+//                        HStack(spacing: -10) {
+//                            ForEach(shift.teammates, id: \.self) { teammate in
+//                                Circle()
+//                                    .fill(Color.randomAppColor())
+//                                    .frame(width: 30, height: 30)
+//                                    .overlay(
+//                                        Text(teammate)
+//                                            .font(.caption)
+//                                            .foregroundColor(.white)
+//                                    )
+//                            }
+//                        }
+//                    }
+//                    
+//                    HStack {
+//                        Spacer()
+//                        Text(shift.role)
+//                            .font(.subheadline)
+//                            .foregroundColor(.gray)
+//                    }
+//                    
+//                }
+//                if shift.date.isToday {
+//                   Button(action: {
+//                       navigateToTaskScreen = true // Trigger navigation
+//                   }) {
+//                       Text("Clock In")
+//                           .foregroundColor(.white)
+//                           .padding()
+//                           .frame(maxWidth: .infinity)
+//                           .background(AppColors.secondary)
+//                           .cornerRadius(10)
+//                   }
+//               }
+//            }
+//            .padding()
+//            .background(Color.white)
+//            .cornerRadius(10)
+//            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 5)
+//        }
+//        .buttonStyle(PlainButtonStyle())
+//        .navigationDestination(isPresented: $navigateToTaskScreen) {
+//            TaskScreen(shift: shift)
+//                .navigationTitle(shift.title)
+//        }
+//    }
+//}
 
 
 struct EventCardView: View {

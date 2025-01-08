@@ -14,7 +14,7 @@ struct ShiftCard: View {
     @State private var navigateToTaskScreen: Bool = false
     
     var body: some View {
-//        NavigationLink(destination: ShiftDetailScreen(shift: shift)) {
+        NavigationLink(destination: ShiftDetailScreen(shift: shift)) {
             VStack(alignment: .leading, spacing: 10) {
                 
                 HStack {
@@ -42,17 +42,16 @@ struct ShiftCard: View {
                         Text("Teammates")
                             .font(.subheadline)
                             .foregroundColor(.gray)
-                        if let teammates = shift.teammates, !teammates.isEmpty {
                             HStack(spacing: -10) {
                                 let maxDisplay = 3
-                                let remaining = teammates.count - maxDisplay
+                                let remaining = shift.assignedUsers.count - maxDisplay
                                 
-                                ForEach(teammates.prefix(maxDisplay), id: \.self) { teammate in
+                                ForEach(shift.assignedUsers.prefix(maxDisplay), id: \.userId) { teammate in
                                     Circle()
                                         .fill(Color.randomAppColor())
                                         .frame(width: 30, height: 30)
                                         .overlay(
-                                            Text(teammate.prefix(1).uppercased())
+                                            Text(teammate.initials)
                                                 .font(.caption)
                                                 .foregroundColor(.white)
                                         )
@@ -69,24 +68,6 @@ struct ShiftCard: View {
                                         )
                                 }
                             }
-                        } else {
-                            Text("No teammates assigned")
-                                .font(.caption)
-                                .foregroundColor(.gray)
-                        }
-                        
-//                        HStack(spacing: -10) {
-//                            ForEach(shift.teammates, id: \.self) { teammate in
-//                                Circle()
-//                                    .fill(Color.randomAppColor())
-//                                    .frame(width: 30, height: 30)
-//                                    .overlay(
-//                                        Text(teammate.prefix(2).uppercased())
-//                                            .font(.caption)
-//                                            .foregroundColor(.white)
-//                                    )
-//                            }
-//                        }
                     }
                     
                     Spacer()
@@ -112,7 +93,14 @@ struct ShiftCard: View {
             .background(Color.white)
             .cornerRadius(10)
             .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 5)
-//        }
-//        .buttonStyle(PlainButtonStyle())
+//            .onTapGesture {
+//                navigateToTaskScreen = true
+//            }
+//            .navigationDestination(isPresented: $navigateToTaskScreen) {
+//                ShiftDetailScreen(shift: shift)
+//            }
+        }
+        .buttonStyle(PlainButtonStyle())
+//        .navigationTitle(shift.event?.venue ?? "Unknown venue")
     }
 }
