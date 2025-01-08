@@ -9,54 +9,66 @@ import Foundation
 import SwiftUI
 
 struct ProfileScreen: View {
-    @StateObject private var viewModel = AuthViewModel()
+    @StateObject private var authViewModel = AuthViewModel()
+    @StateObject private var viewModel = ProfileViewModel()
     
     var body: some View {
         VStack(spacing: 20) {
             Spacer().frame(height: 20)
 
-            // Profile Picture
-            Circle()
-                .fill(AppColors.tertiary)
-                .frame(width: 100, height: 100)
-                .overlay(
-                    Text("BB")
-                        .font(AppFonts.primary(size: 50))
-                        .fontWeight(.bold)
-                        .foregroundColor(AppColors.primary)
-                )
-
-            // Name and Work Hours
-            VStack(spacing: 5) {
-                Text("BIRD VAN BURGER")
-                    .font(AppFonts.primary(size: 25))
-                    .fontWeight(.bold)
-                    .foregroundColor(AppColors.dark)
-
-                Text("24.5h worked this month")
-                    .font(.footnote)
-                    .foregroundColor(.gray)
+            if let user = viewModel.user {
+                VStack{
+                    // Profile Picture
+                    Circle()
+                        .fill(AppColors.tertiary)
+                        .frame(width: 100, height: 100)
+                        .overlay(
+                            Text(user.userInitials)
+                                .font(AppFonts.primary(size: 50))
+                                .fontWeight(.bold)
+                                .foregroundColor(AppColors.primary)
+                        )
+                    
+                    // Name and Work Hours
+                    VStack(spacing: 5) {
+                        Text(user.fullName)
+                            .font(AppFonts.primary(size: 25))
+                            .fontWeight(.bold)
+                            .foregroundColor(AppColors.dark)
+                        
+                        Text("\(viewModel.totalHoursWorked, specifier: "%.1f")h worked this month")
+                            .font(.footnote)
+                            .foregroundColor(.gray)
+                    }
+                    
+                    Spacer().frame(height: 30)
+                    
+                    // Contact Info Cards
+                    VStack(spacing: 15) {
+                        ContactCard(
+                            icon: "envelope.fill",
+                            text: user.email
+                        )
+                        ContactCard(
+                            icon: "phone.fill",
+                            text: user.phone
+                        )
+                    }
+                }
+            } else if viewModel.isLoading {
+                ProgressView("Loading...")
+            } else if let error = viewModel.errorMessage {
+                Text(error)
+                    .foregroundColor(.red)
+                    .multilineTextAlignment(.center)
+                    .padding()
             }
-
-            Spacer().frame(height: 10)
-
-            // Contact Info Cards
-            VStack(spacing: 15) {
-                ContactCard(
-                    icon: "envelope.fill",
-                    text: "Birdvanburger@gmail.com"
-                )
-                ContactCard(
-                    icon: "phone.fill",
-                    text: "+3168605234"
-                )
-            }
-
+            
             Spacer()
 
             // Logout Button
             Button(action: {
-                viewModel.logOut()
+                authViewModel.logOut()
             }) {
                 Text("LOGOUT")
                     .font(AppFonts.primary(size: 20))

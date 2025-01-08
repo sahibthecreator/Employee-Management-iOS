@@ -19,18 +19,27 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct Employee_ManagementApp: App {
-    @StateObject private var authViewModel = AuthViewModel() // old approach
+    @StateObject private var authViewModel = AuthViewModel()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
+    @State private var showTransition = false
+        
     var body: some Scene {
         WindowGroup {
-            if authViewModel.isAuthenticated {
-                TabBar()
-                    .environmentObject(authViewModel)
-            } else {
-                LoginScreen()
-                    .environmentObject(authViewModel)
+            ZStack {
+                if authViewModel.authStateIsLoading {
+                    LaunchScreen()
+                } else if authViewModel.isAuthenticated {
+                    TabBar()
+                        .environmentObject(authViewModel)
+                        .transition(.opacity)
+                } else {
+                    LoginScreen()
+                        .environmentObject(authViewModel)
+                        .transition(.opacity)
+                }
             }
+            .animation(.easeInOut(duration: 0.3), value: authViewModel.isAuthenticated)
         }
     }
 }

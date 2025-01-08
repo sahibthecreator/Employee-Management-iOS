@@ -36,6 +36,9 @@
 		845BF6562CF5F0CA00C06EF9 /* WeekSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845BF6552CF5F0CA00C06EF9 /* WeekSelector.swift */; };
 		845BF6582CF5F0E000C06EF9 /* FullCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845BF6572CF5F0E000C06EF9 /* FullCalendar.swift */; };
 		845BF65C2CF5F70700C06EF9 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845BF65B2CF5F70700C06EF9 /* DateExtension.swift */; };
+		84718BD32D2EAB9400313320 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84718BD22D2EAB9300313320 /* ProfileViewModel.swift */; };
+		84718BD72D2EBC0C00313320 /* LaunchScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84718BD62D2EBC0C00313320 /* LaunchScreen.swift */; };
+		84718BD92D2EC0A300313320 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84718BD82D2EC0A300313320 /* Launch Screen.storyboard */; };
 		847834872D078B6900C0E87D /* TaskScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847834862D078B6900C0E87D /* TaskScreen.swift */; };
 		847834892D078B9000C0E87D /* TaskItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847834882D078B9000C0E87D /* TaskItem.swift */; };
 		8478348B2D078BF700C0E87D /* EmployeeListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8478348A2D078BF700C0E87D /* EmployeeListItem.swift */; };
@@ -84,6 +87,9 @@
 		845BF6552CF5F0CA00C06EF9 /* WeekSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekSelector.swift; sourceTree = "<group>"; };
 		845BF6572CF5F0E000C06EF9 /* FullCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullCalendar.swift; sourceTree = "<group>"; };
 		845BF65B2CF5F70700C06EF9 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
+		84718BD22D2EAB9300313320 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		84718BD62D2EBC0C00313320 /* LaunchScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreen.swift; sourceTree = "<group>"; };
+		84718BD82D2EC0A300313320 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		847834862D078B6900C0E87D /* TaskScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskScreen.swift; sourceTree = "<group>"; };
 		847834882D078B9000C0E87D /* TaskItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskItem.swift; sourceTree = "<group>"; };
 		8478348A2D078BF700C0E87D /* EmployeeListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeeListItem.swift; sourceTree = "<group>"; };
@@ -207,6 +213,7 @@
 				84DA9A392CE60EA500B9B713 /* Preview Content */,
 				84CDC8C92CF61BA0004BF3D8 /* APIClient.swift */,
 				84D91F8E2D2D6F4C001201EC /* Helper.swift */,
+				84718BD82D2EC0A300313320 /* Launch Screen.storyboard */,
 			);
 			path = "Employee Management";
 			sourceTree = "<group>";
@@ -238,6 +245,7 @@
 				84326CE42CF4A56800530CD6 /* ProfileScreen.swift */,
 				849201922CF72339003F0E3B /* ShiftDetailScreen.swift */,
 				847834862D078B6900C0E87D /* TaskScreen.swift */,
+				84718BD62D2EBC0C00313320 /* LaunchScreen.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -249,6 +257,7 @@
 				84326CE82CF4B10F00530CD6 /* CalendarViewModel.swift */,
 				849201942CF7403F003F0E3B /* AvailabilityViewModel.swift */,
 				8417580E2D2C4C3F007C49B1 /* HomeViewModel.swift */,
+				84718BD22D2EAB9300313320 /* ProfileViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -354,6 +363,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84718BD92D2EC0A300313320 /* Launch Screen.storyboard in Resources */,
 				841757F42D2C335E007C49B1 /* GoogleService-Info.plist in Resources */,
 				84DA9A3B2CE60EA500B9B713 /* Preview Assets.xcassets in Resources */,
 				84EAA5422CEB9EE10018A5FA /* mindset-regular.ttf in Resources */,
@@ -379,10 +389,12 @@
 				84DA9A432CE6105000B9B713 /* Colors.swift in Sources */,
 				84CDC8CA2CF61BA0004BF3D8 /* APIClient.swift in Sources */,
 				8417581A2D2D35AA007C49B1 /* EventCard.swift in Sources */,
+				84718BD72D2EBC0C00313320 /* LaunchScreen.swift in Sources */,
 				849201932CF72339003F0E3B /* ShiftDetailScreen.swift in Sources */,
 				843D8A212D00887800C9CAD3 /* AvailabilityModal.swift in Sources */,
 				84D91F8B2D2D5654001201EC /* Availability.swift in Sources */,
 				84DA9A462CE6108200B9B713 /* LoginScreen.swift in Sources */,
+				84718BD32D2EAB9400313320 /* ProfileViewModel.swift in Sources */,
 				845BF65C2CF5F70700C06EF9 /* DateExtension.swift in Sources */,
 				84326CE92CF4B10F00530CD6 /* CalendarViewModel.swift in Sources */,
 				841758112D2C4F16007C49B1 /* Event.swift in Sources */,
@@ -548,6 +560,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -578,6 +591,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
