@@ -21,6 +21,7 @@ struct CalendarScreen: View {
             
             // Tab Navigation
             CalendarTabSelector(selectedTab: $viewModel.selectedTab)
+                .padding(.top, 10)
             
             // Calendar View (Week or Full Month)
             if viewModel.isFullMonthView {

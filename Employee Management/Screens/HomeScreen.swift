@@ -78,7 +78,7 @@ struct HomeScreen: View {
                 }
                 .padding()
             }
-            .padding(.top, 6) // Hardcoded solution
+            .padding(.top, 10) // Hardcoded solution
         }
         .background(Color(UIColor.systemGray6))
         .ignoresSafeArea(edges: .bottom)
@@ -90,7 +90,7 @@ struct SectionHeaderView: View {
 
     var body: some View {
         Text(title)
-            .font(.headline)
+            .font(.primary(size: 18))
             .fontWeight(.bold)
             .foregroundColor(.black)
     }

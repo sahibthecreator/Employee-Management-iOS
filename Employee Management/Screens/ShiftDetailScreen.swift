@@ -25,7 +25,7 @@ struct ShiftDetailScreen: View {
                         .foregroundColor(.gray)
                 }
                 
-                DetailRow(title: "Location", content: shift.event?.address ?? "Unknown Address")
+                DetailRow(title: "Address", content: shift.event?.address ?? "Unknown Address")
                 
                 DetailRow(title: "Description", content: shift.event?.description ?? "No Description")
                 
@@ -33,7 +33,7 @@ struct ShiftDetailScreen: View {
                 
                 DetailRow(title: "Role", content: shift.assignedUsers.first(where: { $0.userId == Auth.auth().currentUser?.uid })?.role ?? "Unknown Role")
                 
-                DetailRow(title: "Additional Information", content: shift.event?.note ?? "")
+                DetailRow(title: "Additional Information", content: shift.event?.note ?? "No additional information")
                 
                 DetailRow(title: "Number of Employees", content: "\(shift.assignedUsers.count)")
                 
@@ -55,8 +55,10 @@ struct ShiftDetailScreen: View {
                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding()
         }
+        .frame(maxWidth: .infinity)
         .background(AppColors.bg)
     }
 }

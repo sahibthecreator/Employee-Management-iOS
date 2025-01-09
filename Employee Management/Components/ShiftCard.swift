@@ -46,9 +46,9 @@ struct ShiftCard: View {
                                 let maxDisplay = 3
                                 let remaining = shift.assignedUsers.count - maxDisplay
                                 
-                                ForEach(shift.assignedUsers.prefix(maxDisplay), id: \.userId) { teammate in
+                                ForEach(Array(shift.assignedUsers.prefix(maxDisplay).enumerated()), id: \.element.userId) { index, teammate in
                                     Circle()
-                                        .fill(Color.randomAppColor())
+                                        .fill(teammateBadgeColors[index])
                                         .frame(width: 30, height: 30)
                                         .overlay(
                                             Text(teammate.initials)
@@ -59,7 +59,7 @@ struct ShiftCard: View {
                                 
                                 if remaining > 0 {
                                     Circle()
-                                        .fill(Color.gray)
+                                        .fill(Color(hex: "662C83"))
                                         .frame(width: 30, height: 30)
                                         .overlay(
                                             Text("+\(remaining)")

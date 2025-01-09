@@ -6,8 +6,8 @@
 //
 
 import Foundation
-
 import FirebaseFirestore
+import FirebaseAuth
 
 class CalendarViewModel: ObservableObject {
     @Published var selectedTab: Int = 0  // 0: My Schedule, 1: Upcoming Events
@@ -84,24 +84,33 @@ class CalendarViewModel: ObservableObject {
     }
     
     private func fetchTeammates(for shift: ShiftDTO, at index: Int) {
-        let teammateIds = shift.assignedUserIds
-
-        var fetchedTeammates: [String] = []
-
+        var updatedAssignedUsers = shift.assignedUsers
         let dispatchGroup = DispatchGroup()
 
-        for userId in teammateIds {
+        for (i, user) in updatedAssignedUsers.enumerated() {
             dispatchGroup.enter()
-            userService.getUserById(userId: userId) { [weak self] user in
-                if let fullName = user?.fullName {
-                    fetchedTeammates.append(fullName)
+            
+            // Use getCurrentUser to handle caching and fresh fetch logic
+            if user.userId == Auth.auth().currentUser?.uid {
+                userService.getCurrentUser { [weak self] cachedUser in
+                    if let cachedUser = cachedUser {
+                        updatedAssignedUsers[i].fullName = cachedUser.fullName
+                    }
+                    dispatchGroup.leave()
                 }
-                dispatchGroup.leave()
+            } else {
+                // Fetch other users by ID
+                userService.getUserById(userId: user.userId) { [weak self] fetchedUser in
+                    if let fetchedUser = fetchedUser {
+                        updatedAssignedUsers[i].fullName = fetchedUser.fullName
+                    }
+                    dispatchGroup.leave()
+                }
             }
         }
 
         dispatchGroup.notify(queue: .main) {
-            self.shifts[index].teammates = fetchedTeammates
+            self.shifts[index].assignedUsers = updatedAssignedUsers
         }
     }
 

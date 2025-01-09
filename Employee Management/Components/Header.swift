@@ -22,17 +22,17 @@ struct Header: View {
             VStack(alignment: .leading) {
                 Text(viewModel.greeting)
                     .foregroundColor(.white)
-                    .font(AppFonts.primary(size: 16))
+                    .font(.primary(size: 16))
                     .fontWeight(.bold)
                     
                 Text(viewModel.fullName)
                     .foregroundColor(.white)
-                    .font(AppFonts.primary(size: 24))
+                    .font(.primary(size: 24))
                     .fontWeight(.bold)
 
                 Text(viewModel.currentDate)
                     .foregroundColor(.white)
-                    .font(.caption2)
+                    .font(.secondary(size: 12))
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding()
@@ -47,7 +47,7 @@ struct Header: View {
                     .padding()
             }
         }
-        .frame(height: 85) 
+        .frame(height: 75)
     }
 }
 

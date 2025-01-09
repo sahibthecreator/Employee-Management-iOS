@@ -16,6 +16,13 @@ struct AppColors {
     static let bg = Color(hex: "F7F7F7")
 }
 
+let teammateBadgeColors: [Color] = [
+            Color(hex: "E8468E"),
+            Color(hex: "FFBFC6"),
+            Color(hex: "DFBFFF"),
+            Color(hex: "662C83")
+]
+
 extension Color {
     init(hex: String) {
         let scanner = Scanner(string: hex)
