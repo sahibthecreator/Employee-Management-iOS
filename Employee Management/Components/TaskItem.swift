@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 struct TaskItem: View {
-    @Binding var task: Task
+    @Binding var task: TaskDTO
     var onComplete: () -> Void
 
     var body: some View {
@@ -43,7 +43,7 @@ struct TaskItem: View {
             }
 
             Spacer()
-            if task.requiresPhoto {
+            if task.requiresImage {
                 Image(systemName: "camera.fill")
                     .foregroundColor(AppColors.secondary)
             }

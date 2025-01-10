@@ -12,7 +12,7 @@ struct TabBar: View {
     
     var body: some View {
         TabView {
-            NavigationStack { // Is it correct?
+            NavigationStack {
                 HomeScreen()
             }
                 .tabItem {

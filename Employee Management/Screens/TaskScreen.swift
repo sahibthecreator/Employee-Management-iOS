@@ -7,18 +7,24 @@
 
 import Foundation
 import SwiftUI
+import FirebaseAuth
 
 struct TaskScreen: View {
-    let shift: Shift
-    @State private var tasks: [Task] = dummyTasks // Task list for the shift
-    @State private var progress: Int = 0
+    @StateObject private var viewModel: TaskViewModel
+    
+//    init(shift: ShiftDTO) {
+//        _viewModel = StateObject(wrappedValue: TaskViewModel(shift: shift))
+//    }
+    init(shift: ShiftDTO) {
+        _viewModel = StateObject(wrappedValue: TaskViewModel(shift: shift))
+    }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 50) {
                 // Shift Details
                 VStack(alignment: .center, spacing: 5) {
-                    Text(shift.title)
+                    Text(viewModel.shift.event?.venue ?? "Unknown Venue")
                         .font(.primary())
                         .fontWeight(.bold)
                         .multilineTextAlignment(.center)
@@ -27,7 +33,7 @@ struct TaskScreen: View {
                         Image("location-icon")
                             .resizable()
                             .frame(width: 24, height: 24)
-                        Text(shift.location)
+                        Text(viewModel.shift.event?.address ?? "Unknown Address")
                             .foregroundColor(.gray)
                             .font(.subheadline)
                     }
@@ -36,13 +42,13 @@ struct TaskScreen: View {
                         Image("time-icon")
                             .resizable()
                             .frame(width: 20, height: 20)
-                        Text("\(shift.time)")
+                        Text("\(viewModel.shift.startTime.formatted(date: .omitted, time: .shortened)) - \(viewModel.shift.endTime.formatted(date: .omitted, time: .shortened))")
                             .foregroundColor(.gray)
                             .font(.subheadline)
                         Image("role-icon")
                             .resizable()
                             .frame(width: 24, height: 24)
-                        Text(shift.role)
+                        Text(viewModel.shift.role(for: Auth.auth().currentUser?.uid))
                             .foregroundColor(.gray)
                             .font(.subheadline)
                     }
@@ -57,46 +63,89 @@ struct TaskScreen: View {
                             .fontWeight(.bold)
                         Spacer()
                         HStack {
-                            CircularProgressView(progress: Double(progress) / Double(tasks.count))
+                            CircularProgressView(progress: viewModel.progress)
                                 .frame(width: 20)
-                            Text("\(progress)/\(tasks.count) Complete")
+                            Text("\(viewModel.completedCount)/\(viewModel.tasks.count) Complete")
                                 .foregroundColor(.gray)
                                 .font(.subheadline)
                         }
                         
                     }
+                    TaskItem(
+                        task: .constant(TaskDTO(
+                            id: -1,
+                            title: "Clock In",
+                            requiresImage: false,
+                            isDone: viewModel.shift.assignedUser(for: viewModel.currentUserId)?.clockInTime != nil,
+                            time: viewModel.shift.assignedUser(for: viewModel.currentUserId)?.clockInTime?.formatted(date: .omitted, time: .shortened)
+                        ))
+                    ) {
+                        viewModel.showClockInAlert = true
+                    }
+                    .alert(isPresented: $viewModel.showClockInAlert) {
+                        Alert(
+                            title: Text("Clock In"),
+                            message: Text("Are you sure you want to clock in?"),
+                            primaryButton: .default(Text("Yes"), action: {
+                                viewModel.clockIn()
+                            }),
+                            secondaryButton: .cancel()
+                        )
+                    }
 
-                    ForEach(tasks.indices, id: \.self) { index in
-                        TaskItem(task: $tasks[index]) {
-                            markTaskAsDone(at: index)
+                    ForEach(viewModel.tasks.indices, id: \.self) { index in
+                        TaskItem(task: $viewModel.tasks[index]) {
+                            viewModel.markTaskAsDone(at: index)
                         }
+                    }
+                    
+                    TaskItem(
+                        task: .constant(TaskDTO(
+                            id: 0,
+                            title: "Clock Out",
+                            requiresImage: false,
+                            isDone: viewModel.shift.assignedUser(for: viewModel.currentUserId)?.clockOutTime != nil,
+                            time: viewModel.shift.assignedUser(for: viewModel.currentUserId)?.clockOutTime?.formatted(date: .omitted, time: .shortened)
+                        ))
+                    ) {
+                        viewModel.showClockOutAlert = true
+                    }
+                    .alert(isPresented: $viewModel.showClockOutAlert) {
+                        Alert(
+                            title: Text("Clock Out"),
+                            message: Text("Are you sure you want to clock out?"),
+                            primaryButton: .default(Text("Yes"), action: {
+                                viewModel.clockOut()
+                            }),
+                            secondaryButton: .cancel()
+                        )
                     }
                 }
 
                 // Employee List
-                if shift.role.lowercased() == "head-trucker" {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Employees:")
-                            .font(.headline)
-                            .fontWeight(.bold)
-
-                        ForEach(shift.employees, id: \.id) { employee in
-                            EmployeeListItem(employee: employee)
-                        }
-                    }
-                }
+//                if shift.role.lowercased() == "head-trucker" {
+//                    VStack(alignment: .leading, spacing: 10) {
+//                        Text("Employees:")
+//                            .font(.headline)
+//                            .fontWeight(.bold)
+//
+//                        ForEach(shift.employees, id: \.id) { employee in
+//                            EmployeeListItem(employee: employee)
+//                        }
+//                    }
+//                }
             }
             .padding()
         }
         .background(AppColors.bg)
     }
 
-    private func markTaskAsDone(at index: Int) {
-        if !tasks[index].isDone {
-            tasks[index].isDone = true
-            progress += 1
-        }
-    }
+//    private func markTaskAsDone(at index: Int) {
+//        if !tasks[index].isDone {
+//            tasks[index].isDone = true
+//            progress += 1
+//        }
+//    }
 }
 
 
@@ -117,6 +166,6 @@ struct Employee: Identifiable {
     let clockInTime: String?
 }
 
-#Preview(){
-    TaskScreen(shift: dummyShifts[0])
-}
+//#Preview(){
+//    TaskScreen(shift: dummyShifts[0])
+//}

@@ -12,6 +12,7 @@ import FirebaseAuth
 struct ShiftCard: View {
     let shift: ShiftDTO
     @State private var navigateToTaskScreen: Bool = false
+    @State private var showConfirmationAlert: Bool = false
     
     var body: some View {
         NavigationLink(destination: ShiftDetailScreen(shift: shift)) {
@@ -75,30 +76,81 @@ struct ShiftCard: View {
                         .font(.subheadline)
                         .foregroundColor(.gray)
                 }
-                
                 if Calendar.current.isDateInToday(shift.startTime) {
                     Button(action: {
                         navigateToTaskScreen = true
                     }) {
-                        Text("Clock In")
+                        Text("Open Tasks")
                             .foregroundColor(.white)
                             .padding()
                             .frame(maxWidth: .infinity)
                             .background(AppColors.secondary)
                             .cornerRadius(10)
                     }
+//                    .alert(isPresented: $showClockInConfirmation) {
+//                        Alert(
+//                            title: Text("Clock In"),
+//                            message: Text("Are you sure you want to clock in?"),
+//                            primaryButton: .default(Text("Yes"), action: {
+//                                navigateToTaskScreen = true
+//                            }),
+//                            secondaryButton: .cancel()
+//                        )
+//                    }
+//                    switch state {
+//                    case .needToClockIn:
+//                        Button(action: {
+//                            showConfirmationAlert = true
+//                        }) {
+//                            Text("Clock In")
+//                                .foregroundColor(.white)
+//                                .padding()
+//                                .frame(maxWidth: .infinity)
+//                                .background(AppColors.secondary)
+//                                .cornerRadius(10)
+//                        }
+//                        .alert(isPresented: $showConfirmationAlert) {
+//                            Alert(
+//                                title: Text("Clock In"),
+//                                message: Text("Are you sure you want to clock in?"),
+//                                primaryButton: .default(Text("Yes"), action: {
+//                                    navigateToTaskScreen = true
+//                                }),
+//                                secondaryButton: .cancel()
+//                            )
+//                        }
+//                    case .clockedIn:
+//                        Button(action: {
+//                            navigateToTaskScreen = true
+//                        }) {
+//                            Text("Go to Tasks")
+//                                .foregroundColor(.white)
+//                                .padding()
+//                                .frame(maxWidth: .infinity)
+//                                .background(AppColors.secondary)
+//                                .cornerRadius(10)
+//                        }
+//                    case .needToClockOut:
+//                        Button(action: {
+//                            navigateToTaskScreen = true
+//                        }) {
+//                            Text("Go to Tasks")
+//                                .foregroundColor(.white)
+//                                .padding()
+//                                .frame(maxWidth: .infinity)
+//                                .background(AppColors.secondary)
+//                                .cornerRadius(10)
+//                        }
+//                    }
                 }
             }
             .padding()
             .background(Color.white)
             .cornerRadius(10)
             .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 5)
-//            .onTapGesture {
-//                navigateToTaskScreen = true
-//            }
-//            .navigationDestination(isPresented: $navigateToTaskScreen) {
-//                ShiftDetailScreen(shift: shift)
-//            }
+            .navigationDestination(isPresented: $navigateToTaskScreen) {
+                TaskScreen(shift: shift)
+            }
         }
         .buttonStyle(PlainButtonStyle())
 //        .navigationTitle(shift.event?.venue ?? "Unknown venue")

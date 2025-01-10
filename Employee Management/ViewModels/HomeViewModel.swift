@@ -44,26 +44,33 @@ class HomeViewModel: ObservableObject {
           .getDocuments { [weak self] snapshot, error in
               DispatchQueue.main.async {
                   if let error = error {
+                      print(error)
                       self?.errorMessage = "Failed to fetch shifts: \(error.localizedDescription)"
-                      completion()  // Continue to fetch events even if shifts fail
+                      completion()
                       return
                   }
-                  
                   guard let documents = snapshot?.documents else {
-                      self?.errorMessage = "No shifts found."
                       completion()
                       return
                   }
                   
-                  let fetchedShifts = documents.compactMap { try? $0.data(as: ShiftDTO.self) }
+//                  let fetchedShifts = documents.compactMap { try? $0.data(as: ShiftDTO.self) }
+//                  self?.shifts = fetchedShifts
+                  let fetchedShifts = documents.compactMap { document in
+                      do {
+                          return try document.data(as: ShiftDTO.self)
+                      } catch {
+                          print("Failed to decode ShiftDTO for document ID \(document.documentID): \(error)")
+                          return nil
+                      }
+                  }
                   self?.shifts = fetchedShifts
-                  print(fetchedShifts)
                   for (index, shift) in fetchedShifts.enumerated() {
                       self?.fetchEventForShift(shift, at: index)
                       self?.fetchTeammates(for: shift, at: index)
                   }
                   self?.isLoading = false
-                  completion()  // to trigger event fetching after completion
+                  completion()
               }
           }
     }
