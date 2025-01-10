@@ -8,12 +8,14 @@
 import Foundation
 import FirebaseFirestore
 import FirebaseAuth
+import FirebaseStorage
 
 class TaskViewModel: ObservableObject {
     @Published var tasks: [TaskDTO] = []
     @Published var completedCount: Int = 0
     @Published var showClockInAlert = false
     @Published var showClockOutAlert = false
+    @Published var isUploadingImage = false
     private var completedTaskIds: Set<Int> = []
     private var db = Firestore.firestore()
     var shift: ShiftDTO
@@ -32,31 +34,36 @@ class TaskViewModel: ObservableObject {
     }
     
     func clockIn() {
-        guard let currentUserId = Auth.auth().currentUser?.uid else { return }
         updateAssignedUserField(
-            userId: currentUserId,
             field: "clockInTime",
             value: Timestamp(date: Date())
         )
     }
 
     func clockOut() {
-        guard let currentUserId = Auth.auth().currentUser?.uid else { return }
         updateAssignedUserField(
-            userId: currentUserId,
             field: "clockOutTime",
             value: Timestamp(date: Date())
         )
     }
-
-    private func updateAssignedUserField(userId: String, field: String, value: Any) {
+    
+    private func updateAssignedUserField(field: String, value: Any) {
         guard let shiftId = shift.id else { return }
-        
+        var currentTasks: [Int] = []
         // Prepare the updated assignedUsers array for Firestore
         let updatedUsers = shift.assignedUsers.map { user -> [String: Any] in
             var userDict = user.toDictionary()
-            if user.userId == userId {
-                userDict[field] = value
+            if user.userId == currentUserId {
+                if field == "completedTasks", let taskId = value as? Int {
+                    // Append taskId to completedTasks if it doesn't already exist
+                    currentTasks = userDict["completedTasks"] as? [Int] ?? []
+                    if !currentTasks.contains(taskId) {
+                        currentTasks.append(taskId)
+                    }
+                    userDict["completedTasks"] = currentTasks
+                } else {
+                    userDict[field] = value
+                }
             }
             return userDict
         }
@@ -70,25 +77,25 @@ class TaskViewModel: ObservableObject {
                 
                 // Update the local shift object
                 DispatchQueue.main.async {
-                    if let index = self?.shift.assignedUsers.firstIndex(where: { $0.userId == userId }) {
+                    if let index = self?.shift.assignedUsers.firstIndex(where: { $0.userId == self?.currentUserId }) {
                         switch field {
                         case "clockInTime":
                             if let timestamp = value as? Timestamp {
                                 self?.shift.assignedUsers[index].clockInTime = timestamp.dateValue()
                             }
-                                           case "clockOutTime":
+                        case "clockOutTime":
                             if let timestamp = value as? Timestamp {
                                 self?.shift.assignedUsers[index].clockOutTime = timestamp.dateValue()
                             }
                         case "completedTasks":
-                            if let completedTasks = value as? [Int] {
-                                self?.shift.assignedUsers[index].completedTasks = completedTasks
+                            self?.shift.assignedUsers[index].completedTasks = currentTasks
+                            if let index = self?.tasks.firstIndex(where: { $0.id == value as? Int }) {
+                                self?.tasks[index].isDone = true
                             }
+                            
                         default:
                             break
                         }
-                        // Notify SwiftUI to update the UI
-                        self?.objectWillChange.send()
                     }
                 }
             }
@@ -121,19 +128,26 @@ class TaskViewModel: ObservableObject {
         }
     }
     
-    func markTaskAsDone(at index: Int) {
+    func markTaskAsDone(at index: Int, with image: UIImage? = nil) {
         guard !tasks[index].isDone else { return }
-        tasks[index].isDone = true
-        completedCount += 1
         
-        // Update Firestore with the completed task
-        //        saveCompletedTask(taskId: tasks[index].taskId)
-        updateAssignedUsers(taskId: tasks[index].id) { [weak self] success in
-            if !success {
+        if let image = image, tasks[index].requiresImage {
+            isUploadingImage = true
+//            completeTaskWithImage(taskId: tasks[index].id, image: image)
+            completeTaskWithImage(taskId: tasks[index].id, image: image) { [weak self] success in
                 DispatchQueue.main.async {
-                    // Revert the UI state if the Firestore update fails
-                    self?.tasks[index].isDone = false
-                    self?.completedCount -= 1
+                    self?.isUploadingImage = false
+                    if success {
+                        self?.tasks[index].isDone = true
+                        self?.completedCount += 1
+                    }
+                }
+            }
+        } else {
+            updateAssignedUsers(taskId: tasks[index].id) { [weak self] success in
+                if success {
+                    self?.tasks[index].isDone = true
+                    self?.completedCount += 1
                 }
             }
         }
@@ -164,27 +178,6 @@ class TaskViewModel: ObservableObject {
                 }
             }
     }
-    
-//    private func fetchCompletedTasks(for shift: ShiftDTO, completion: @escaping ([Int]) -> Void) {
-//        db.collection("shifts").document(shift.id ?? "").getDocument { snapshot, error in
-//            if let error = error {
-//                print("Error fetching completed tasks: \(error)")
-//                completion([])
-//                return
-//            }
-//            
-//            if let data = snapshot?.data(),
-//               let assignedUsers = data["assignedUsers"] as? [[String: Any]],
-//               let currentUser = Auth.auth().currentUser {
-//                let currentUserData = assignedUsers.first(where: { $0["userId"] as? String == currentUser.uid })
-//                let completedTasks = currentUserData?["completedTasks"] as? [Int] ?? []
-////                self.shift.assignedUsers = assignedUsers
-//                completion(completedTasks)
-//            } else {
-//                completion([])
-//            }
-//        }
-//    }
     
     private func fetchCompletedTasks(for shift: ShiftDTO, completion: @escaping ([Int]) -> Void) {
         guard let shiftId = shift.id else {
@@ -264,10 +257,27 @@ class TaskViewModel: ObservableObject {
             completion(false)
         }
     }
-}
-
-enum OngoingShiftState {
-    case needToClockIn
-    case clockedIn
-    case needToClockOut
+    
+    private func completeTaskWithImage(taskId: Int, image: UIImage, completion: @escaping (Bool) -> Void) {
+        guard let currentUser = Auth.auth().currentUser else { return }
+        guard let shiftId = shift.id else { return }
+        
+        // Convert image to Data
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else { return }
+        
+        // Create a reference to Firebase Storage
+        let storageRef = Storage.storage().reference().child("task_images/\(shiftId)/\(currentUser.uid)_\(taskId).jpg")
+        
+        storageRef.putData(imageData, metadata: nil) { [weak self] _, error in
+            if let error = error {
+                print("Error uploading image: \(error.localizedDescription)")
+                completion(false)
+                return
+            }
+            
+            // Image uploaded successfully, now mark the task as done in Firestore
+            self?.updateAssignedUserField(field: "completedTasks", value: taskId)
+            completion(true)
+        }
+    }
 }

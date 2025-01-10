@@ -7,16 +7,24 @@
 
 import Foundation
 import SwiftUI
+import PhotosUI
 
 struct TaskItem: View {
     @Binding var task: TaskDTO
-    var onComplete: () -> Void
+    var onComplete: (UIImage?) -> Void  
+    
+    @State private var showImagePicker = false
+    @State private var selectedImage: UIImage?
 
     var body: some View {
         HStack {
             Button(action: {
                 if !task.isDone {
-                    onComplete()
+                    if task.requiresImage {
+                        showImagePicker = true
+                    } else {
+                        onComplete(nil)  // No image required
+                    }
                 }
             }) {
                 Circle()
@@ -46,11 +54,20 @@ struct TaskItem: View {
             if task.requiresImage {
                 Image(systemName: "camera.fill")
                     .foregroundColor(AppColors.secondary)
+                    .onTapGesture {
+                        showImagePicker = true
+                    }
             }
         }
         .padding()
         .background(task.isDone ? Color(UIColor.systemGray6) : Color.white)
         .cornerRadius(10)
         .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 5)
+        .sheet(isPresented: $showImagePicker) {
+            ImagePicker(image: $selectedImage, onImagePicked: { image in
+                onComplete(image)
+            })
+        }
     }
 }
+
