@@ -21,11 +21,11 @@ struct AvailabilityScreen: View {
             
             Text("My working hours")
                 .padding(.top)
-                .font(.title3)
-                .fontWeight(.bold)
+                .font(.primary(size: 20))
+                .foregroundColor(.primaryText)
             
             VStack(spacing: 20) {
-                // Month Navigation
+                // month Navigation
                 HStack {
                     Button(action: {
                         viewModel.previousMonth()
@@ -39,11 +39,12 @@ struct AvailabilityScreen: View {
                     
                     VStack {
                         Text(viewModel.currentMonth)
-                            .font(.headline)
-                            .fontWeight(.bold)
+                            .font(.secondary(size: 17))
+                            .foregroundColor(.primaryText)
                         
                         Text("\(String(viewModel.currentYear))")
-                            .foregroundColor(.gray)
+                            .font(.secondary(size: 15))
+                            .foregroundColor(.secondaryText)
                     }
                     
                     Spacer()
@@ -57,18 +58,17 @@ struct AvailabilityScreen: View {
                     }
                 }
                 
-                // Weekdays Header
+                // weekdays
                 HStack {
                     ForEach(viewModel.weekdaySymbols, id: \.self) { weekday in
                         Text(weekday)
-                            .font(.caption)
-                            .fontWeight(.bold)
+                            .font(.secondary(size: 12))
+                            .foregroundColor(.secondaryText)
                             .frame(maxWidth: .infinity)
-                            .foregroundColor(.gray)
                     }
                 }
                 
-                // Calendar Grid
+                // calendar grid
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 10) {
                     ForEach(viewModel.daysInMonth, id: \.self) { day in
                         if let date = viewModel.date(for: day) {
@@ -91,10 +91,10 @@ struct AvailabilityScreen: View {
             }
             .padding()
             
-            // Selected Day Availability Section
+            // bottom section for current day availability
             VStack {
                 Text("\(viewModel.formattedSelectedDate)")
-                    .font(.headline)
+                    .font(.secondary(size: 17))
                     .foregroundColor(AppColors.secondary)
                     .padding(.top, 10)
                 
@@ -104,13 +104,15 @@ struct AvailabilityScreen: View {
                             .fill(availabilityDotColor(for: availability))
                             .frame(width: 12, height: 12)
                         Text(availability.timeRange)
-                            .foregroundColor(.gray)
+                            .font(.secondary(size: 15))
+                            .foregroundColor(.secondaryText)
                     } else {
                         Circle()
                             .fill(.green)
                             .frame(width: 12, height: 12)
                         Text("Available Entire Day")
-                            .foregroundColor(.gray)
+                            .font(.secondary(size: 15))
+                            .foregroundColor(.secondaryText)
                     }
                     Spacer()
                     Button(action: {
@@ -177,18 +179,19 @@ struct CalendarDayView: View {
                     .fill(isSelected ? AppColors.secondary : Color.clear)
                     .frame(width: 36, height: 36)
                 
-                // Render the day number if day exists
                 if let day = day {
                     Text("\(day)")
-                        .foregroundColor(isSelected ? .white : .black)
+                        .foregroundColor(isSelected ? .white : .primaryText)
+                        .font(.secondary(size: 17))
                         .frame(width: 36, height: 36)
                         .onTapGesture {
                             onSelect()
                         }
+                    
                 }
             }
             
-            // Render dot only if the day exists
+            // render availability dot only if the day exists
             if day != nil {
                 if let availability = availability {
                     Circle()

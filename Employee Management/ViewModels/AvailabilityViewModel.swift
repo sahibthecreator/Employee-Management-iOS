@@ -227,6 +227,50 @@ class AvailabilityViewModel: ObservableObject {
             }
     }
     
+    func saveAvailabilityForDateRange(startDate: Date, endDate: Date) {
+        guard let userId = userId else { return }
+        
+        let range = generateDateRange(from: startDate, to: endDate)
+        let batch = db.batch()
+        
+        for date in range {
+            let formattedDate = calendar.startOfDay(for: date)
+            let availability = Availability(
+                date: Timestamp(date: formattedDate),
+                timeRange: "Unavailable Entire Day",
+                status: "unavailable",
+                startTime: nil,
+                endTime: nil
+            )
+            
+            let docRef = db.collection("availability")
+                .document(userId)
+                .collection("dates")
+                .document(formattedDate.toFirestoreString())
+            
+            batch.setData(availability.toDictionary(), forDocument: docRef)
+        }
+        
+        batch.commit { error in
+            if let error = error {
+                print("Failed to save availability for multiple days: \(error.localizedDescription)")
+                return
+            }
+            print("Successfully saved availability for multiple days")
+            self.loadInitialData()
+        }
+    }
+
+    private func generateDateRange(from start: Date, to end: Date) -> [Date] {
+        var dates: [Date] = []
+        var currentDate = start
+        while currentDate <= end {
+            dates.append(currentDate)
+            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
+        }
+        return dates
+    }
+    
     private func updateCalendar(for date: Date) {
         selectedDate = date
         currentMonth = calendar.monthSymbols[calendar.component(.month, from: date) - 1]

@@ -16,13 +16,16 @@ struct AvailabilityModal: View {
     @State private var startTime: Date = Calendar.current.date(bySettingHour: 9, minute: 0, second: 0, of: Date())!
     @State private var endTime: Date = Calendar.current.date(bySettingHour: 17, minute: 0, second: 0, of: Date())!
     
+    @State private var startDate: Date = Date()
+    @State private var endDate: Date = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
+    
     var onSaveSuccess: (String) -> Void
 
     var body: some View {
         VStack(spacing: 20) {
             Text("CHANGE AVAILABILITY")
-                .font(.headline)
-                .fontWeight(.bold)
+                .font(.primary(size: 20))
+                .foregroundColor(.primaryText)
             
             // Availability Options
             VStack(spacing: 15) {
@@ -41,7 +44,6 @@ struct AvailabilityModal: View {
                     option: .specificTimeRange,
                     selectedOption: $selectedOption
                 )
-                
                 if selectedOption == .specificTimeRange {
                     HStack {
                         DatePicker("Start", selection: $startTime, displayedComponents: .hourAndMinute)
@@ -53,6 +55,20 @@ struct AvailabilityModal: View {
                             .frame(width: 100)
                     }
                 }
+                AvailabilityOptionRow(
+                    title: "Unavailable multiple days",
+                    option: .unavailableMultipleDays,
+                    selectedOption: $selectedOption
+                )
+                if selectedOption == .unavailableMultipleDays {
+                    HStack {
+                        DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
+                            .labelsHidden()
+                        Text("-")
+                        DatePicker("End Date", selection: $endDate, displayedComponents: .date)
+                            .labelsHidden()
+                    }
+                }
             }
             
             // Save Button
@@ -62,6 +78,7 @@ struct AvailabilityModal: View {
             }) {
                 Text("SAVE")
                     .foregroundColor(.white)
+                    .font(.primary(size: 16))
                     .frame(maxWidth: .infinity)
                     .padding()
                     .background(AppColors.secondary)
@@ -86,6 +103,9 @@ struct AvailabilityModal: View {
             let formattedRange = "\(formattedTime(startTime)) - \(formattedTime(endTime))"
             viewModel.saveAvailability(to: formattedRange, startTime: startTime.toFirestoreString(), endTime: endTime.toFirestoreString())
             onSaveSuccess("Availability Updated")
+        case .unavailableMultipleDays:
+            viewModel.saveAvailabilityForDateRange(startDate: startDate, endDate: endDate)
+            onSaveSuccess("Marked Unavailable for Multiple Days")
         }
     }
 
@@ -105,7 +125,8 @@ struct AvailabilityOptionRow: View {
     var body: some View {
         HStack {
             Text(title)
-                .foregroundColor(selectedOption == option ? .black : .gray)
+                .foregroundColor(selectedOption == option ? .primaryText : .secondaryText)
+                .font(.secondary(size: 15))
             Spacer()
             Circle()
                 .stroke(selectedOption == option ? AppColors.secondary : Color.gray, lineWidth: 2)
@@ -127,4 +148,5 @@ enum AvailabilityOption {
     case availableEntireDay
     case unavailableEntireDay
     case specificTimeRange
+    case unavailableMultipleDays
 }
