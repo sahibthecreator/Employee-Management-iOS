@@ -15,17 +15,26 @@ struct AvailabilityModal: View {
     @State private var selectedOption: AvailabilityOption = .availableEntireDay
     @State private var startTime: Date = Calendar.current.date(bySettingHour: 9, minute: 0, second: 0, of: Date())!
     @State private var endTime: Date = Calendar.current.date(bySettingHour: 17, minute: 0, second: 0, of: Date())!
-    
-    @State private var startDate: Date = Date()
+
     @State private var endDate: Date = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
     
     var onSaveSuccess: (String) -> Void
+    
+    private var isDateTooSoon: Bool {
+        let twoWeeksFromNow = Calendar.current.date(byAdding: .day, value: 14, to: Date())!
+        return viewModel.selectedDate < twoWeeksFromNow
+    }
 
     var body: some View {
         VStack(spacing: 20) {
             Text("CHANGE AVAILABILITY")
                 .font(.primary(size: 20))
                 .foregroundColor(.primaryText)
+            if isDateTooSoon {
+                Text("Some options are available only for dates at least 2 weeks from today.")
+                    .font(.secondary(size: 14))
+                    .foregroundColor(.secondaryText)
+            }
             
             // Availability Options
             VStack(spacing: 15) {
@@ -39,11 +48,17 @@ struct AvailabilityModal: View {
                     option: .unavailableEntireDay,
                     selectedOption: $selectedOption
                 )
+                .disabled(isDateTooSoon)
+                .opacity(isDateTooSoon ? 0.5 : 1)
+                
                 AvailabilityOptionRow(
                     title: "Available from",
                     option: .specificTimeRange,
                     selectedOption: $selectedOption
                 )
+                .disabled(isDateTooSoon)
+                .opacity(isDateTooSoon ? 0.5 : 1)
+                
                 if selectedOption == .specificTimeRange {
                     HStack {
                         DatePicker("Start", selection: $startTime, displayedComponents: .hourAndMinute)
@@ -56,16 +71,16 @@ struct AvailabilityModal: View {
                     }
                 }
                 AvailabilityOptionRow(
-                    title: "Unavailable multiple days",
-                    option: .unavailableMultipleDays,
+                    title: "Unavailable until",
+                    option: .unavailableUntil,
                     selectedOption: $selectedOption
                 )
-                if selectedOption == .unavailableMultipleDays {
+                .disabled(isDateTooSoon)
+                .opacity(isDateTooSoon ? 0.5 : 1)
+                
+                if selectedOption == .unavailableUntil {
                     HStack {
-                        DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
-                            .labelsHidden()
-                        Text("-")
-                        DatePicker("End Date", selection: $endDate, displayedComponents: .date)
+                        DatePicker("Til Date", selection: $endDate, displayedComponents: .date)
                             .labelsHidden()
                     }
                 }
@@ -89,6 +104,13 @@ struct AvailabilityModal: View {
             Spacer()
         }
         .padding()
+        .onAppear {
+            setupInitialDates()
+        }
+    }
+    
+    private func setupInitialDates() {
+        endDate = Calendar.current.date(byAdding: .day, value: 2, to: viewModel.selectedDate) ?? viewModel.selectedDate
     }
 
     private func saveAvailability() {
@@ -103,8 +125,9 @@ struct AvailabilityModal: View {
             let formattedRange = "\(formattedTime(startTime)) - \(formattedTime(endTime))"
             viewModel.saveAvailability(to: formattedRange, startTime: startTime.toFirestoreString(), endTime: endTime.toFirestoreString())
             onSaveSuccess("Availability Updated")
-        case .unavailableMultipleDays:
-            viewModel.saveAvailabilityForDateRange(startDate: startDate, endDate: endDate)
+        case .unavailableUntil:
+            endDate = Calendar.current.date(byAdding: .day, value: -1, to: endDate) ?? endDate // until is exclusive, so we won't update availability of last day
+            viewModel.saveAvailabilityForDateRange(endDate: endDate)
             onSaveSuccess("Marked Unavailable for Multiple Days")
         }
     }
@@ -148,5 +171,5 @@ enum AvailabilityOption {
     case availableEntireDay
     case unavailableEntireDay
     case specificTimeRange
-    case unavailableMultipleDays
+    case unavailableUntil
 }

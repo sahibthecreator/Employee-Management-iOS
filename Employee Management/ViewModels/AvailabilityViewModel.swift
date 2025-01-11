@@ -227,10 +227,10 @@ class AvailabilityViewModel: ObservableObject {
             }
     }
     
-    func saveAvailabilityForDateRange(startDate: Date, endDate: Date) {
+    func saveAvailabilityForDateRange(endDate: Date) {
         guard let userId = userId else { return }
         
-        let range = generateDateRange(from: startDate, to: endDate)
+        let range = generateDateRange(from: selectedDate, to: endDate)
         let batch = db.batch()
         
         for date in range {
