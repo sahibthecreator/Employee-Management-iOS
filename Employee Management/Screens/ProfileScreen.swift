@@ -18,32 +18,32 @@ struct ProfileScreen: View {
 
             if let user = viewModel.user {
                 VStack{
-                    // Profile Picture
+                    // profile pic
                     Circle()
                         .fill(AppColors.tertiary)
                         .frame(width: 100, height: 100)
                         .overlay(
                             Text(user.initials)
-                                .font(AppFonts.primary(size: 50))
+                                .font(.primary(size: 50))
                                 .fontWeight(.bold)
-                                .foregroundColor(AppColors.primary)
+                                .foregroundColor(.brandPrimary)
                         )
                     
-                    // Name and Work Hours
+                    // name
                     VStack(spacing: 5) {
                         Text(user.fullName)
-                            .font(AppFonts.primary(size: 25))
+                            .font(.primary(size: 25))
                             .fontWeight(.bold)
-                            .foregroundColor(AppColors.dark)
+                            .foregroundColor(.primaryText)
                         
                         Text("\(viewModel.totalHoursWorked, specifier: "%.1f")h worked this month")
-                            .font(.footnote)
-                            .foregroundColor(.gray)
+                            .font(.secondary(size: 13))
+                            .foregroundColor(.secondaryText)
                     }
                     
                     Spacer().frame(height: 30)
                     
-                    // Contact Info Cards
+                    // contact info cards
                     VStack(spacing: 15) {
                         ContactCard(
                             icon: "envelope.fill",
@@ -66,13 +66,12 @@ struct ProfileScreen: View {
             
             Spacer()
 
-            // Logout Button
+            // logout button
             Button(action: {
                 authViewModel.logOut()
             }) {
                 Text("LOGOUT")
-                    .font(AppFonts.primary(size: 20))
-                    .fontWeight(.bold)
+                    .font(.primary(size: 20))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity, minHeight: 50)
                     .background(AppColors.secondary)
@@ -103,9 +102,8 @@ struct ContactCard: View {
                 )
 
             Text(text)
-                .font(.subheadline)
-                .fontWeight(.semibold)
-                .foregroundColor(AppColors.dark)
+                .font(.secondary(size: 16))
+                .foregroundColor(.primaryText)
 
             Spacer()
         }

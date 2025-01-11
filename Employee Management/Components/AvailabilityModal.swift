@@ -93,9 +93,9 @@ struct AvailabilityModal: View {
             }) {
                 Text("SAVE")
                     .foregroundColor(.white)
-                    .font(.primary(size: 16))
-                    .frame(maxWidth: .infinity)
-                    .padding()
+                    .font(.primary(size: 20))
+                    .frame(maxWidth: .infinity,  minHeight: 50)
+                    .padding(.horizontal, 80)
                     .background(AppColors.secondary)
                     .cornerRadius(10)
             }

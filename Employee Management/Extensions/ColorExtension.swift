@@ -10,7 +10,7 @@ import SwiftUI
 
 extension Color {
     
-    static let primary: Color = Color(hex: "662C83")
+    static let brandPrimary: Color = Color(hex: "662C83")
     
     static let secondary: Color = Color(hex: "E8468E")
     
