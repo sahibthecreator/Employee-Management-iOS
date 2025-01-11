@@ -18,11 +18,11 @@ struct ShiftDetailScreen: View {
                 VStack(alignment: .leading){
                     Text(shift.event?.venue ?? "Unknown Venue")
                         .font(.primary(size: 30))
-                        .fontWeight(.bold)
+                        .foregroundColor(.primaryText)
                     
                     Text(shift.startTime.formatted(date: .complete, time: .omitted))
                         .font(.secondary(size:17))
-                        .foregroundColor(.gray)
+                        .foregroundColor(.secondaryText)
                 }
                 
                 DetailRow(title: "Address", content: shift.event?.address ?? "Unknown Address")
@@ -41,7 +41,7 @@ struct ShiftDetailScreen: View {
                 VStack(alignment: .leading, spacing: 5) {
                     Text("Employees")
                         .font(.secondary(size: 17))
-                        .foregroundColor(.gray)
+                        .foregroundColor(.secondaryText)
                     ScrollView {
                         VStack(spacing: 5) {
                             ForEach(shift.assignedUsers, id: \.userId) { user in

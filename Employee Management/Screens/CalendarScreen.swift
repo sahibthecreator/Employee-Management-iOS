@@ -23,11 +23,10 @@ struct CalendarScreen: View {
             CalendarTabSelector(selectedTab: $viewModel.selectedTab)
                 .padding(.top, 10)
             
-            // Calendar View (Week or Full Month)
             if viewModel.isFullMonthView {
-                FullCalendar(
-                    selectedDate: $viewModel.currentWeek,
-                    onSelectWeek: viewModel.selectWeek
+                FullCalendar(viewModel: FullCalendarViewModel(
+                    selectedDate: viewModel.currentWeek,
+                    onSelectWeek:  viewModel.selectWeek)
                 )
             } else {
                 WeekSelector(

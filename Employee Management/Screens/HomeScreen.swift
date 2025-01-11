@@ -177,39 +177,6 @@ struct SectionHeaderView: View {
 //}
 
 
-struct EventCardView: View {
-    let event: Event
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                VStack(alignment: .leading) {
-                    Text(event.title)
-                        .font(.headline)
-                        .fontWeight(.bold)
-                    Text(event.location)
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                }
-                Spacer()
-                VStack(alignment: .trailing) {
-                    Text(event.date.formatted) // Use formatted date
-                        .font(.subheadline)
-                        .fontWeight(.bold)
-                    Text(event.time)
-                        .font(.subheadline)
-                        .foregroundColor(event.isDraft ?? false ? .red : .gray)
-                }
-            }
-        }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(10)
-        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 5)
-    }
-}
-
-
 #Preview {
     HomeScreen()
 }

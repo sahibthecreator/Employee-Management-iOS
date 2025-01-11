@@ -17,19 +17,19 @@ struct EventCard: View {
                 HStack {
                     VStack(alignment: .leading) {
                         Text(event.venue)
-                            .font(.headline)
-                            .fontWeight(.bold)
+                            .font(.primary(size: 17))
+                            .foregroundColor(.primaryText)
                         Text(event.address)
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
+                            .font(.secondary(size: 15))
+                            .foregroundColor(.secondaryText)
                     }
                     Spacer()
                     VStack(alignment: .trailing) {
                         Text(event.startTime.formatted(date: .abbreviated, time: .omitted))
-                            .font(.headline)
-                            .fontWeight(.bold)
+                            .font(.primary(size: 17))
+                            .foregroundColor(.secondaryText)
                         Text("\(event.startTime.formatted(date: .omitted, time: .shortened)) - \(event.endTime.formatted(date: .omitted, time: .shortened))")
-                            .font(.subheadline)
+                            .font(.secondary(size: 15))
                             .foregroundColor(event.status == "draft" ? .red : .gray)
                     }
                 }

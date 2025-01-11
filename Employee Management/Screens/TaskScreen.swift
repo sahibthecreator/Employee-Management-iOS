@@ -12,9 +12,6 @@ import FirebaseAuth
 struct TaskScreen: View {
     @StateObject private var viewModel: TaskViewModel
     
-//    init(shift: ShiftDTO) {
-//        _viewModel = StateObject(wrappedValue: TaskViewModel(shift: shift))
-//    }
     init(shift: ShiftDTO) {
         _viewModel = StateObject(wrappedValue: TaskViewModel(shift: shift))
     }
@@ -157,33 +154,4 @@ struct TaskScreen: View {
             }
         }
     }
-
-//    private func markTaskAsDone(at index: Int) {
-//        if !tasks[index].isDone {
-//            tasks[index].isDone = true
-//            progress += 1
-//        }
-//    }
 }
-
-
-struct Task: Identifiable {
-    let id = UUID()
-    let title: String
-    let time: String?
-    let requiresPhoto: Bool
-    var isDone: Bool = false
-}
-
-struct Employee: Identifiable {
-    let id = UUID()
-    let initials: String
-    let name: String
-    let role: String
-    let isClockedIn: Bool
-    let clockInTime: String?
-}
-
-//#Preview(){
-//    TaskScreen(shift: dummyShifts[0])
-//}

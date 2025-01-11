@@ -16,10 +16,10 @@ struct DetailRow: View {
         VStack(alignment: .leading, spacing: 5) {
             Text(title)
                 .font(.secondary(size: 17))
-                .foregroundColor(.gray)
+                .foregroundColor(.secondaryText)
                 Text(content)
                     .font(.secondary(size: 15))
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondaryText)
         }
     }
 }

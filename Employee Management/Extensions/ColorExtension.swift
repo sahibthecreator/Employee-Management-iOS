@@ -9,6 +9,17 @@ import Foundation
 import SwiftUI
 
 extension Color {
+    
+    static let primary: Color = Color(hex: "662C83")
+    
+    static let secondary: Color = Color(hex: "E8468E")
+    
+    static let tertiary: Color = Color(hex: "F29FA8")
+    
+    static let primaryText: Color = Color(hex: "0D1829")
+    
+    static let secondaryText: Color = Color(hex: "445668")
+    
     static func randomAppColor() -> Color {
         let colors = [
             AppColors.primary,      // Original Primary

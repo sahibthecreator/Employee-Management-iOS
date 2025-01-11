@@ -182,23 +182,3 @@ extension Calendar {
         return startOfWeek
     }
 }
-
-// Data Models
-struct Shift {
-    let title: String
-    let location: String
-    let date: Date
-    let time: String
-    let role: String
-    let teammates: [String]
-    let isDraft: Bool?
-    let employees: [Employee]
-}
-
-struct Event {
-    let title: String
-    let location: String
-    let date: Date
-    let time: String
-    let isDraft: Bool?
-}

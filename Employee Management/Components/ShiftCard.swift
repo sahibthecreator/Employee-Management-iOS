@@ -17,32 +17,31 @@ struct ShiftCard: View {
     var body: some View {
         NavigationLink(destination: ShiftDetailScreen(shift: shift)) {
             VStack(alignment: .leading, spacing: 10) {
-                
                 HStack {
                     VStack(alignment: .leading) {
                         Text(shift.event?.venue ?? "Unknown Venue")
-                            .font(.headline)
-                            .fontWeight(.bold)
+                            .font(.primary(size: 17))
+                            .foregroundColor(.primaryText)
                         Text(shift.event?.address ?? "No Address")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
+                            .font(.secondary(size: 15))
+                            .foregroundColor(.secondaryText)
                     }
                     Spacer()
                     VStack(alignment: .trailing) {
                         Text(shift.startTime.formatted(date: .abbreviated, time: .omitted))
-                           .font(.headline)
-                           .fontWeight(.bold)
+                            .font(.primary(size: 17))
+                            .foregroundColor(.secondaryText)
                         Text("\(shift.startTime.formatted(date: .omitted, time: .shortened)) - \(shift.endTime.formatted(date: .omitted, time: .shortened))")
-                           .font(.subheadline)
-                           .foregroundColor(.gray)
+                            .font(.secondary(size: 15))
+                            .foregroundColor(.secondaryText)
                     }
                 }
                 
                 HStack {
                     VStack(alignment: .leading) {
                         Text("Teammates")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
+                            .font(.secondary(size: 15))
+                            .foregroundColor(.secondaryText)
                             HStack(spacing: -10) {
                                 let maxDisplay = 3
                                 let remaining = shift.assignedUsers.count - maxDisplay
@@ -53,7 +52,7 @@ struct ShiftCard: View {
                                         .frame(width: 30, height: 30)
                                         .overlay(
                                             Text(teammate.initials)
-                                                .font(.caption)
+                                                .font(.primary(size: 15))
                                                 .foregroundColor(.white)
                                         )
                                 }
@@ -64,7 +63,7 @@ struct ShiftCard: View {
                                         .frame(width: 30, height: 30)
                                         .overlay(
                                             Text("+\(remaining)")
-                                                .font(.caption)
+                                                .font(.primary(size: 14))
                                                 .foregroundColor(.white)
                                         )
                                 }
@@ -73,75 +72,21 @@ struct ShiftCard: View {
                     
                     Spacer()
                     Text(shift.assignedUsers.first(where: { $0.userId == Auth.auth().currentUser?.uid })?.role ?? "Role N/A")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
+                        .font(.secondary(size: 15))
+                        .foregroundColor(.secondaryText)
                 }
                 if Calendar.current.isDateInToday(shift.startTime) {
                     Button(action: {
                         navigateToTaskScreen = true
                     }) {
                         Text("Open Tasks")
+                            .font(.primary(size: 17))
                             .foregroundColor(.white)
                             .padding()
                             .frame(maxWidth: .infinity)
                             .background(AppColors.secondary)
                             .cornerRadius(10)
                     }
-//                    .alert(isPresented: $showClockInConfirmation) {
-//                        Alert(
-//                            title: Text("Clock In"),
-//                            message: Text("Are you sure you want to clock in?"),
-//                            primaryButton: .default(Text("Yes"), action: {
-//                                navigateToTaskScreen = true
-//                            }),
-//                            secondaryButton: .cancel()
-//                        )
-//                    }
-//                    switch state {
-//                    case .needToClockIn:
-//                        Button(action: {
-//                            showConfirmationAlert = true
-//                        }) {
-//                            Text("Clock In")
-//                                .foregroundColor(.white)
-//                                .padding()
-//                                .frame(maxWidth: .infinity)
-//                                .background(AppColors.secondary)
-//                                .cornerRadius(10)
-//                        }
-//                        .alert(isPresented: $showConfirmationAlert) {
-//                            Alert(
-//                                title: Text("Clock In"),
-//                                message: Text("Are you sure you want to clock in?"),
-//                                primaryButton: .default(Text("Yes"), action: {
-//                                    navigateToTaskScreen = true
-//                                }),
-//                                secondaryButton: .cancel()
-//                            )
-//                        }
-//                    case .clockedIn:
-//                        Button(action: {
-//                            navigateToTaskScreen = true
-//                        }) {
-//                            Text("Go to Tasks")
-//                                .foregroundColor(.white)
-//                                .padding()
-//                                .frame(maxWidth: .infinity)
-//                                .background(AppColors.secondary)
-//                                .cornerRadius(10)
-//                        }
-//                    case .needToClockOut:
-//                        Button(action: {
-//                            navigateToTaskScreen = true
-//                        }) {
-//                            Text("Go to Tasks")
-//                                .foregroundColor(.white)
-//                                .padding()
-//                                .frame(maxWidth: .infinity)
-//                                .background(AppColors.secondary)
-//                                .cornerRadius(10)
-//                        }
-//                    }
                 }
             }
             .padding()

@@ -18,8 +18,8 @@ struct EmployeeCard: View {
                 .frame(width: 45, height: 45)
                 .overlay(
                     Text(user.initials)
+                        .font(.primary(size: 20))
                         .foregroundColor(.white)
-                        .fontWeight(.bold)
                 )
             
             VStack(alignment: .leading) {

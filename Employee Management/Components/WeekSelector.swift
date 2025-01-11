@@ -27,10 +27,10 @@ struct WeekSelector: View {
             Spacer()
             VStack {
                 Text("Week \(Calendar.current.component(.weekOfYear, from: currentWeek))")
-                    .fontWeight(.bold)
+                    .font(.secondary(size: 17))
                 Text("\(formattedDateRange(for: currentWeek))")
                     .foregroundColor(.gray)
-                    .font(.caption)
+                    .font(.secondary(size: 13))
             }
             Button(action: onToggleFullMonthView) {
                 Image(systemName: "calendar")
