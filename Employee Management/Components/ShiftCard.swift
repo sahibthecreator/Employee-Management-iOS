@@ -28,9 +28,14 @@ struct ShiftCard: View {
                     }
                     Spacer()
                     VStack(alignment: .trailing) {
-                        Text(shift.startTime.formatted(date: .abbreviated, time: .omitted))
-                            .font(.primary(size: 17))
-                            .foregroundColor(.secondaryText)
+                        HStack(spacing: 10) {
+                            Image("calendar-icon")
+                                .resizable()
+                                .frame(width: 19, height: 19)
+                            Text(shift.startTime.formatted(date: .abbreviated, time: .omitted))
+                                .font(.primary(size: 17))
+                                .foregroundColor(.secondaryText)
+                        }
                         Text("\(shift.startTime.formatted(date: .omitted, time: .shortened)) - \(shift.endTime.formatted(date: .omitted, time: .shortened))")
                             .font(.secondary(size: 15))
                             .foregroundColor(.secondaryText)
@@ -71,9 +76,14 @@ struct ShiftCard: View {
                     }
                     
                     Spacer()
-                    Text(shift.assignedUsers.first(where: { $0.userId == Auth.auth().currentUser?.uid })?.role ?? "Role N/A")
-                        .font(.secondary(size: 15))
-                        .foregroundColor(.secondaryText)
+                    HStack(spacing: 10) {
+                        Image("role-icon")
+                            .resizable()
+                            .frame(width: 18, height: 18)
+                        Text(shift.assignedUsers.first(where: { $0.userId == Auth.auth().currentUser?.uid })?.role ?? "Role N/A")
+                            .font(.secondary(size: 15))
+                            .foregroundColor(.secondaryText)
+                    }
                 }
                 if Calendar.current.isDateInToday(shift.startTime) {
                     Button(action: {

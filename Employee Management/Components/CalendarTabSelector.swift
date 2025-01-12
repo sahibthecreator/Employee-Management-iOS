@@ -22,7 +22,7 @@ struct CalendarTabSelector: View {
                 let buttonHeight = geometry.size.height
 
                 RoundedRectangle(cornerRadius: 5)
-                    .fill(Color.primary)
+                    .fill(Color.brandPrimary)
                     .frame(width: buttonWidth - 10, height: buttonHeight - 16)
                     .offset(x: CGFloat(selectedTab) * buttonWidth + 5, y: 8.5)
                     .animation(.easeInOut(duration: 0.3), value: selectedTab)

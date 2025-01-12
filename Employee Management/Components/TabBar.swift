@@ -19,7 +19,7 @@ struct TabBar: View {
                     Image(systemName: "house.fill")
                     Text("Home")
                 }
-            NavigationView {
+            NavigationStack {
                 CalendarScreen()
             }
                 .tabItem {

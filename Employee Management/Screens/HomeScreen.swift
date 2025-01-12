@@ -23,10 +23,16 @@ struct HomeScreen: View {
                     VStack(spacing: 10) {
                         if viewModel.isLoading {
                             ProgressView("Loading Shifts...")
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .padding()
+                        } else if let error = viewModel.errorMessage {
+                            Text(error)
+                                .foregroundColor(.red)
                                 .padding()
                         } else if viewModel.shifts.isEmpty {
                             Text("No upcoming shifts.")
                                 .foregroundColor(.gray)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 .padding()
                         } else {
                             VStack(spacing: 10) {
@@ -37,13 +43,18 @@ struct HomeScreen: View {
                         }
                     }
                     Button(action: {}) {
-                        Text("🚫 Unavailable?")
-                            .fontWeight(.bold)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(AppColors.primary)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
+                        HStack(spacing: 5) {
+                            Image("unavailable-icon")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                            Text("Unavailable?")
+                                .fontWeight(.bold)
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(AppColors.primary)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
                     }
 
                     // Upcoming Events
@@ -51,6 +62,7 @@ struct HomeScreen: View {
                     VStack(spacing: 10) {
                         if viewModel.eventsIsLoading {
                            ProgressView("Loading Events...")
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
                                .padding()
                        } else if let error = viewModel.eventsErrorMessage {
                            Text(error)
@@ -59,6 +71,7 @@ struct HomeScreen: View {
                        } else if viewModel.unassignedEvents.isEmpty {
                            Text("No upcoming events.")
                                .foregroundColor(.gray)
+                               .frame(maxWidth: .infinity, maxHeight: .infinity)
                                .padding()
                        } else {
                            ForEach(viewModel.unassignedEvents) { event in
@@ -67,13 +80,18 @@ struct HomeScreen: View {
                        }
                     }
                     Button(action: {}) {
-                        Text("💼 See more")
-                            .fontWeight(.bold)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(AppColors.primary)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
+                        HStack(spacing: 5) {
+                            Image("shift-icon")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                            Text("See more")
+                                .fontWeight(.bold)
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(AppColors.primary)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
                     }
                 }
                 .padding()
@@ -81,7 +99,6 @@ struct HomeScreen: View {
             .padding(.top, 10) // Hardcoded solution
         }
         .background(Color(UIColor.systemGray6))
-        .ignoresSafeArea(edges: .bottom)
     }
 }
 

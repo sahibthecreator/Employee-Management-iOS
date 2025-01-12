@@ -25,12 +25,24 @@ struct EventCard: View {
                     }
                     Spacer()
                     VStack(alignment: .trailing) {
-                        Text(event.startTime.formatted(date: .abbreviated, time: .omitted))
-                            .font(.primary(size: 17))
-                            .foregroundColor(.secondaryText)
-                        Text("\(event.startTime.formatted(date: .omitted, time: .shortened)) - \(event.endTime.formatted(date: .omitted, time: .shortened))")
-                            .font(.secondary(size: 15))
-                            .foregroundColor(event.status == "draft" ? .red : .gray)
+                        HStack(spacing: 10) {
+                            Image("calendar-icon")
+                                .resizable()
+                                .frame(width: 19, height: 19)
+                            Text(event.startTime.formatted(date: .abbreviated, time: .omitted))
+                                .font(.primary(size: 17))
+                                .foregroundColor(.secondaryText)
+                        }
+                        HStack(spacing: 10) {
+                            if(event.status == "draft") {
+                                Image("warning-icon")
+                                    .resizable()
+                                    .frame(width: 18, height: 18)
+                            }
+                            Text("\(event.startTime.formatted(date: .omitted, time: .shortened)) - \(event.endTime.formatted(date: .omitted, time: .shortened))")
+                                .font(.secondary(size: 15))
+                                .foregroundColor(event.status == "draft" ? .red : .gray)
+                        }
                     }
                 }
             }
