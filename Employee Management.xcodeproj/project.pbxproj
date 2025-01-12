@@ -48,6 +48,7 @@
 		84718BE92D318ADF00313320 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84718BE82D318ADF00313320 /* ImagePicker.swift */; };
 		84718BEB2D32AAB800313320 /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84718BEA2D32AAB800313320 /* ArrayExtension.swift */; };
 		84718BED2D32B03800313320 /* FullCalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84718BEC2D32B03800313320 /* FullCalendarViewModel.swift */; };
+		84718BEF2D33FB1400313320 /* CalendarService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84718BEE2D33FB1400313320 /* CalendarService.swift */; };
 		847834872D078B6900C0E87D /* TaskScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847834862D078B6900C0E87D /* TaskScreen.swift */; };
 		847834892D078B9000C0E87D /* TaskItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847834882D078B9000C0E87D /* TaskItem.swift */; };
 		8478348B2D078BF700C0E87D /* EmployeeListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8478348A2D078BF700C0E87D /* EmployeeListItem.swift */; };
@@ -108,6 +109,7 @@
 		84718BE82D318ADF00313320 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		84718BEA2D32AAB800313320 /* ArrayExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
 		84718BEC2D32B03800313320 /* FullCalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullCalendarViewModel.swift; sourceTree = "<group>"; };
+		84718BEE2D33FB1400313320 /* CalendarService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarService.swift; sourceTree = "<group>"; };
 		847834862D078B6900C0E87D /* TaskScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskScreen.swift; sourceTree = "<group>"; };
 		847834882D078B9000C0E87D /* TaskItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskItem.swift; sourceTree = "<group>"; };
 		8478348A2D078BF700C0E87D /* EmployeeListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmployeeListItem.swift; sourceTree = "<group>"; };
@@ -193,6 +195,7 @@
 			children = (
 				8478348F2D08C41D00C0E87D /* KeychainService.swift */,
 				841758152D2C65D8007C49B1 /* UserService.swift */,
+				84718BEE2D33FB1400313320 /* CalendarService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -452,6 +455,7 @@
 				84DA9A342CE60EA400B9B713 /* Employee_ManagementApp.swift in Sources */,
 				847834902D08C41D00C0E87D /* KeychainService.swift in Sources */,
 				8417580D2D2C4BD6007C49B1 /* Shift.swift in Sources */,
+				84718BEF2D33FB1400313320 /* CalendarService.swift in Sources */,
 				84EAA53E2CEB91FB0018A5FA /* Header.swift in Sources */,
 				84718BE92D318ADF00313320 /* ImagePicker.swift in Sources */,
 				8478348D2D07940A00C0E87D /* CircularProgressView.swift in Sources */,

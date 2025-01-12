@@ -37,7 +37,7 @@ struct FullCalendar: View {
 
             // Weekdays
             HStack {
-                ForEach(viewModel.weekdaySymbols(), id: \.self) { weekday in
+                ForEach(viewModel.calendarService.weekdaySymbols(), id: \.self) { weekday in
                     Text(weekday)
                         .font(.secondary(size: 11))
                         .frame(maxWidth: .infinity)
@@ -56,12 +56,12 @@ struct FullCalendar: View {
                                 }
                             }) {
                                 if let date = date {
-                                    Text(viewModel.dayString(from: date))
+                                    Text(viewModel.calendarService.dayString(from: date))
                                         .font(.secondary(size: 17))
-                                        .foregroundColor(viewModel.isSameDate(date, viewModel.selectedDate) ? .white : .black)
+                                        .foregroundColor(viewModel.calendarService.isSameDate(date, viewModel.selectedDate) ? .white : .black)
                                         .frame(width: 40, height: 40)
                                         .background(
-                                            viewModel.isSameDate(date, viewModel.selectedDate) ? Color.secondary : Color.clear
+                                            viewModel.calendarService.isSameDate(date, viewModel.selectedDate) ? Color.secondary : Color.clear
                                         )
                                         .clipShape(Circle())
                                 } else {

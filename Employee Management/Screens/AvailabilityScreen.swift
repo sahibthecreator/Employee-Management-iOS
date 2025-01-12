@@ -60,7 +60,7 @@ struct AvailabilityScreen: View {
                 
                 // weekdays
                 HStack {
-                    ForEach(viewModel.weekdaySymbols, id: \.self) { weekday in
+                    ForEach(viewModel.calendarService.weekdaySymbols(), id: \.self) { weekday in
                         Text(weekday)
                             .font(.secondary(size: 12))
                             .foregroundColor(.secondaryText)
@@ -70,14 +70,14 @@ struct AvailabilityScreen: View {
                 
                 // calendar grid
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 10) {
-                    ForEach(viewModel.daysInMonth, id: \.self) { day in
-                        if let date = viewModel.date(for: day) {
+                    ForEach(viewModel.daysInGrid, id: \.self) { date in
+                        if let date = date {
                             CalendarDayView(
-                                day: day,
-                                isSelected: viewModel.isSelected(day: day),
+                                day: Calendar.current.component(.day, from: date),
+                                isSelected: viewModel.calendarService.isSameDate(date, viewModel.selectedDate),
                                 availability: viewModel.availabilityData[date]
                             ) {
-                                viewModel.selectDate(day)
+                                viewModel.selectDate(date)
                             }
                         } else {
                             CalendarDayView(

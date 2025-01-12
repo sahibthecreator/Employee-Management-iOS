@@ -18,4 +18,10 @@ extension Date {
         let calendar = Calendar.current
         return calendar.isDateInToday(self)
     }
+    
+    func toFirestoreString() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: self)
+    }
 }

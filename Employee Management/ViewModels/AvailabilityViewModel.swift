@@ -10,127 +10,30 @@ import FirebaseCore
 import FirebaseFirestore
 import FirebaseAuth
 
-//class AvailabilityViewModel: ObservableObject {
-//    @Published var selectedDate: Date = Date()
-//    @Published var selectedDayAvailability: Availability?
-//    @Published var daysInMonth: [Int?] = []
-//    @Published var currentMonth: String = ""
-//    @Published var currentYear: Int = 0
-//
-//    private let calendar = Calendar.current
-//    public var availabilityData: [Date: Availability] = [:]
-//
-//    var weekdaySymbols: [String] {
-//        let symbols = calendar.shortWeekdaySymbols
-//        let firstWeekdayIndex = calendar.firstWeekday - 1 // Adjust to zero-based index
-//        return Array(symbols[firstWeekdayIndex...] + symbols[..<firstWeekdayIndex])
-//    }
-//
-//    init() {
-//        updateCalendar(for: Date())
-//    }
-//
-//    func loadInitialData() {
-//        // Mock availability data
-//        availabilityData = [
-//            Calendar.current.date(from: DateComponents(year: 2024, month: 11, day: 26))!: Availability(timeRange: "10:00-13:00"),
-//            Calendar.current.date(from: DateComponents(year: 2024, month: 11, day: 28))!: Availability(timeRange: "08:00-12:00"),
-//        ]
-//        updateAvailability()
-//    }
-//
-//    func goBack() {
-//        // Handle back navigation
-//    }
-//
-//    func previousMonth() {
-//        guard let newDate = calendar.date(byAdding: .month, value: -1, to: selectedDate) else { return }
-//        updateCalendar(for: newDate)
-//    }
-//
-//    func nextMonth() {
-//        guard let newDate = calendar.date(byAdding: .month, value: 1, to: selectedDate) else { return }
-//        updateCalendar(for: newDate)
-//    }
-//
-//    func selectDate(_ day: Int?) {
-//        guard let day = day else { return }
-//        if let newDate = calendar.date(from: DateComponents(year: currentYear, month: calendar.component(.month, from: selectedDate), day: day)) {
-//            selectedDate = newDate
-//            updateAvailability()
-//        }
-//    }
-//
-//    func isSelected(day: Int?) -> Bool {
-//        guard let day = day else { return false }
-//        return calendar.component(.day, from: selectedDate) == day
-//    }
-//
-//    private func updateCalendar(for date: Date) {
-//        selectedDate = date
-//        currentMonth = calendar.monthSymbols[calendar.component(.month, from: date) - 1]
-//        currentYear = calendar.component(.year, from: date)
-//        daysInMonth = generateDays(for: date)
-//    }
-//
-//    private func generateDays(for date: Date) -> [Int?] {
-//        guard let range = calendar.range(of: .day, in: .month, for: date),
-//              let firstDay = calendar.date(from: calendar.dateComponents([.year, .month], from: date)) else { return [] }
-//
-//        let firstWeekday = calendar.component(.weekday, from: firstDay) - calendar.firstWeekday
-//        let emptyDays = (firstWeekday + 7) % 7
-//        return Array(repeating: nil, count: emptyDays) + Array(range)
-//    }
-//
-//    private func updateAvailability() {
-//        selectedDayAvailability = availabilityData[selectedDate]
-//    }
-//
-//    var formattedSelectedDate: String {
-//        let formatter = DateFormatter()
-//        formatter.dateStyle = .full
-//        return formatter.string(from: selectedDate)
-//    }
-//    
-//    func saveAvailability(to newAvailability: String) {
-//        availabilityData[selectedDate] = Availability(timeRange: newAvailability)
-//        updateAvailability()
-//    }
-//}
-//
-//struct Availability {
-//    let timeRange: String
-//}
-
 
 class AvailabilityViewModel: ObservableObject {
     @Published var selectedDate: Date = Date()
     @Published var selectedDayAvailability: Availability?
-    @Published var daysInMonth: [Int?] = []
+    @Published var daysInGrid: [Date?] = []
     @Published var currentMonth: String = ""
     @Published var currentYear: Int = 0
+    public var availabilityData: [Date: Availability] = [:]
     
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
-
+    
+    let calendarService = CalendarService()
+    
     private let calendar = Calendar.current
     private var db = Firestore.firestore()
     private var userId: String? {
         Auth.auth().currentUser?.uid
     }
     
-    public var availabilityData: [Date: Availability] = [:]
-    
-    var weekdaySymbols: [String] {
-        let symbols = calendar.shortWeekdaySymbols
-        let firstWeekdayIndex = calendar.firstWeekday - 1
-        return Array(symbols[firstWeekdayIndex...] + symbols[..<firstWeekdayIndex])
-    }
-
     init() {
         updateCalendar(for: Date())
     }
-
+    
     func loadInitialData() {
         guard let userId = userId else { return }
         isLoading = true
@@ -156,7 +59,7 @@ class AvailabilityViewModel: ObservableObject {
                     self?.availabilityData = documents.compactMap { doc -> (Date, Availability)? in
                         let data = doc.data()
                         
-                        // Manually parse the date as Timestamp and convert it to Date
+                        // manually parse the date as Timestamp and convert it to Date
                         guard let timestamp = data["date"] as? Timestamp else {
                             print("Failed to parse timestamp")
                             return nil
@@ -170,8 +73,6 @@ class AvailabilityViewModel: ObservableObject {
                             startTime: data["startTime"] as? String,
                             endTime: data["endTime"] as? String
                         )
-                        
-                        print("success")
                         return (timestamp.dateValue(), availability)
                     }
                     .reduce(into: [Date: Availability]()) { (result, tuple) in
@@ -260,7 +161,7 @@ class AvailabilityViewModel: ObservableObject {
             self.loadInitialData()
         }
     }
-
+    
     private func generateDateRange(from start: Date, to end: Date) -> [Date] {
         var dates: [Date] = []
         var currentDate = start
@@ -275,65 +176,36 @@ class AvailabilityViewModel: ObservableObject {
         selectedDate = date
         currentMonth = calendar.monthSymbols[calendar.component(.month, from: date) - 1]
         currentYear = calendar.component(.year, from: date)
-        daysInMonth = generateDays(for: date)
+        daysInGrid = calendarService.generateDaysInGrid(for: selectedDate)
     }
-
-    private func generateDays(for date: Date) -> [Int?] {
-        guard let range = calendar.range(of: .day, in: .month, for: date),
-              let firstDay = calendar.date(from: calendar.dateComponents([.year, .month], from: date)) else { return [] }
-
-        let firstWeekday = calendar.component(.weekday, from: firstDay) - calendar.firstWeekday
-        let emptyDays = (firstWeekday + 7) % 7
-        return Array(repeating: nil, count: emptyDays) + Array(range)
-    }
-    
     
     func previousMonth() {
         guard let newDate = calendar.date(byAdding: .month, value: -1, to: selectedDate) else { return }
         updateCalendar(for: newDate)
     }
-
+    
     func nextMonth() {
         guard let newDate = calendar.date(byAdding: .month, value: 1, to: selectedDate) else { return }
         updateCalendar(for: newDate)
     }
-
-    func selectDate(_ day: Int?) {
-        guard let day = day else { return }
-        if let newDate = calendar.date(from: DateComponents(year: currentYear, month: calendar.component(.month, from: selectedDate), day: day)) {
-            selectedDate = newDate
-            updateAvailability()
-        }
-    }
-
-    private func updateAvailability() {
-        selectedDayAvailability = availabilityData[selectedDate]
-    }
     
-    func isSelected(day: Int?) -> Bool {
-        guard let day = day else { return false }
-        return calendar.component(.day, from: selectedDate) == day
+    func selectDate(_ date: Date) {
+        selectedDate = date
+        updateAvailability()
     }
     
     func date(for day: Int?) -> Date? {
         guard let day = day else { return nil }
         return calendar.date(from: DateComponents(year: currentYear, month: calendar.component(.month, from: selectedDate), day: day))
     }
-
+    
+    private func updateAvailability() {
+        selectedDayAvailability = availabilityData[selectedDate]
+    }
     
     var formattedSelectedDate: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .full
         return formatter.string(from: selectedDate)
-    }
-}
-
-
-// Date Extension for Firestore-friendly format
-extension Date {
-    func toFirestoreString() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: self)
     }
 }
