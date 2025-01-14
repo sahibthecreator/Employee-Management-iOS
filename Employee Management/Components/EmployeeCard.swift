@@ -10,7 +10,12 @@ import SwiftUI
 
 struct EmployeeCard: View {
     let user: AssignedUser
+    let displayClockInTime: Bool
     
+    init(user: AssignedUser, displayClockInTime: Bool = false) {
+        self.user = user
+        self.displayClockInTime = displayClockInTime
+    }
     var body: some View {
         HStack {
             Circle()
@@ -30,8 +35,19 @@ struct EmployeeCard: View {
                     .font(.secondary(size: 13))
                     .foregroundColor(.gray)
             }
-            
             Spacer()
+            if(displayClockInTime) {
+                if let clockInTime = user.clockInTime {
+                    Text("Clocker In At: \(clockInTime.formatted(date: .omitted, time: .shortened))")
+                        .font(.secondary(size: 13))
+                        .foregroundColor(.green)
+                } else {
+                    Text("Not Clocked In")
+                        .font(.secondary(size: 13))
+                        .foregroundColor(.red)
+                }
+            }
+            
         }
         .padding()
         .background(Color.white)

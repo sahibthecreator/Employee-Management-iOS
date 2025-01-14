@@ -36,10 +36,10 @@ struct FullCalendar: View {
             }
 
             // Weekdays
-            HStack {
+            HStack(spacing: 25) {
                 ForEach(viewModel.calendarService.weekdaySymbols(), id: \.self) { weekday in
                     Text(weekday)
-                        .font(.secondary(size: 11))
+                        .font(.secondary(size: 12))
                         .frame(maxWidth: .infinity)
                 }
             }
@@ -47,9 +47,9 @@ struct FullCalendar: View {
 
             // dates grid
             VStack {
-                ForEach(viewModel.daysInGrid.chunked(into: 7), id: \.self) { week in
+                ForEach(Array(viewModel.daysInGrid.chunked(into: 7).enumerated()), id: \.offset) { weekIndex, week in
                     HStack {
-                        ForEach(week, id: \.self) { date in
+                        ForEach(Array(week.enumerated()), id: \.offset) { dayIndex, date in
                             Button(action: {
                                 if let date = date {
                                     viewModel.selectDate(date)
@@ -69,6 +69,7 @@ struct FullCalendar: View {
                                         .frame(width: 40, height: 40)
                                 }
                             }
+                            .frame(maxWidth: .infinity)
                             .disabled(date == nil)
                         }
                     }

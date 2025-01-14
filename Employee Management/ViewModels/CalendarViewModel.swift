@@ -45,9 +45,12 @@ class CalendarViewModel: ObservableObject {
     }
 
     private func fetchShifts(in range: ClosedRange<Date>) {
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+        
         db.collection("shifts")
-          .whereField("startTime", isGreaterThanOrEqualTo: Timestamp(date: range.lowerBound))
-          .whereField("startTime", isLessThanOrEqualTo: Timestamp(date: range.upperBound))
+            .whereField("assignedUserIds", arrayContains: userId)
+            .whereField("startTime", isGreaterThanOrEqualTo: Timestamp(date: range.lowerBound))
+            .whereField("startTime", isLessThanOrEqualTo: Timestamp(date: range.upperBound))
           .getDocuments { [weak self] snapshot, error in
               DispatchQueue.main.async {
                   if let error = error {

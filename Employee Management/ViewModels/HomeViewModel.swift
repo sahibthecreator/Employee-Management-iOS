@@ -35,11 +35,13 @@ class HomeViewModel: ObservableObject {
     func fetchShifts(completion: @escaping () -> Void) {
         guard let userId = Auth.auth().currentUser?.uid else { return }
         
+        let today = Calendar.current.startOfDay(for: Date())
+        
         isLoading = true
         errorMessage = nil
-        print(userId)
         db.collection("shifts")
           .whereField("assignedUserIds", arrayContains: userId)
+          .whereField("startTime", isGreaterThanOrEqualTo: Timestamp(date: today))
           .order(by: "startTime")
           .getDocuments { [weak self] snapshot, error in
               DispatchQueue.main.async {
@@ -54,8 +56,6 @@ class HomeViewModel: ObservableObject {
                       return
                   }
                   
-//                  let fetchedShifts = documents.compactMap { try? $0.data(as: ShiftDTO.self) }
-//                  self?.shifts = fetchedShifts
                   let fetchedShifts = documents.compactMap { document in
                       do {
                           return try document.data(as: ShiftDTO.self)

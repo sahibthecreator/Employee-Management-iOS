@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -368,7 +368,6 @@
 				};
 			};
 			buildConfigurationList = 84DA9A2B2CE60EA400B9B713 /* Build configuration list for PBXProject "Employee Management" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -379,6 +378,7 @@
 			packageReferences = (
 				841757F52D2C3448007C49B1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
+			preferredProjectObjectVersion = 77;
 			productRefGroup = 84DA9A312CE60EA400B9B713 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";

@@ -15,6 +15,7 @@ class TaskViewModel: ObservableObject {
     @Published var completedCount: Int = 0
     @Published var showClockInAlert = false
     @Published var showClockOutAlert = false
+    @Published var isTasksLoading = false
     @Published var isUploadingImage = false
     private var completedTaskIds: Set<Int> = []
     private var db = Firestore.firestore()
@@ -82,15 +83,18 @@ class TaskViewModel: ObservableObject {
                         case "clockInTime":
                             if let timestamp = value as? Timestamp {
                                 self?.shift.assignedUsers[index].clockInTime = timestamp.dateValue()
+                                self?.objectWillChange.send()
                             }
                         case "clockOutTime":
                             if let timestamp = value as? Timestamp {
                                 self?.shift.assignedUsers[index].clockOutTime = timestamp.dateValue()
+                                self?.objectWillChange.send()
                             }
                         case "completedTasks":
                             self?.shift.assignedUsers[index].completedTasks = currentTasks
                             if let index = self?.tasks.firstIndex(where: { $0.id == value as? Int }) {
                                 self?.tasks[index].isDone = true
+                                self?.objectWillChange.send()
                             }
                             
                         default:
@@ -104,6 +108,7 @@ class TaskViewModel: ObservableObject {
     
     func loadTasks(for shift: ShiftDTO) {
         guard let currentUserId = Auth.auth().currentUser?.uid else { return }
+        isTasksLoading = true
         
         // Find the role of the logged-in user in assignedUsers
         guard let currentUserRole = shift.assignedUsers.first(where: { $0.userId == currentUserId })?.role else {
@@ -115,12 +120,12 @@ class TaskViewModel: ObservableObject {
         fetchRoleTasks(role: currentUserRole) { [weak self] predefinedTasks in
             self?.fetchCompletedTasks(for: shift) { completedIds in
                 DispatchQueue.main.async {
-                    var allTasks = predefinedTasks.map { task in
+                    let allTasks = predefinedTasks.map { task in
                         var updatedTask = task
                         updatedTask.isDone = completedIds.contains(task.id)
                         return updatedTask
                     }
-                    
+                    self?.isTasksLoading = false
                     self?.tasks = allTasks
                     self?.completedCount = allTasks.filter { $0.isDone }.count
                 }
@@ -133,7 +138,6 @@ class TaskViewModel: ObservableObject {
         
         if let image = image, tasks[index].requiresImage {
             isUploadingImage = true
-//            completeTaskWithImage(taskId: tasks[index].id, image: image)
             completeTaskWithImage(taskId: tasks[index].id, image: image) { [weak self] success in
                 DispatchQueue.main.async {
                     self?.isUploadingImage = false
@@ -200,9 +204,9 @@ class TaskViewModel: ObservableObject {
             
             // Update the local shift object
             let updatedAssignedUsers = assignedUsersData.compactMap { AssignedUser.fromFirestore($0) }
-            DispatchQueue.main.async {
-                self.shift.assignedUsers = updatedAssignedUsers
-            }
+//            DispatchQueue.main.async {
+//                self.shift.assignedUsers = updatedAssignedUsers
+//            }
             
             // Extract the current user's completed tasks
             let completedTasks = self.getCompletedTasks(for: Auth.auth().currentUser?.uid, from: updatedAssignedUsers)
@@ -237,8 +241,6 @@ class TaskViewModel: ObservableObject {
             completedTasks.append(taskId)
             user.completedTasks = completedTasks
             updatedAssignedUsers[index] = user
-            print("----TASK ID----")
-            print(taskId)
             // update with the modified assignedUsers array
             db.collection("shifts").document(shiftId).updateData([
                 "assignedUsers": updatedAssignedUsers.map { $0.toDictionary() }

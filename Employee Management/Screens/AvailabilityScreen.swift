@@ -70,7 +70,7 @@ struct AvailabilityScreen: View {
                 
                 // calendar grid
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 10) {
-                    ForEach(viewModel.daysInGrid, id: \.self) { date in
+                    ForEach(Array(viewModel.daysInGrid.enumerated()), id: \.offset) { index, date in
                         if let date = date {
                             CalendarDayView(
                                 day: Calendar.current.component(.day, from: date),

@@ -90,13 +90,17 @@ struct TaskScreen: View {
                                 secondaryButton: .cancel()
                             )
                         }
-                        
-                        ForEach(viewModel.tasks.indices, id: \.self) { index in
-                            TaskItem(task: $viewModel.tasks[index]) { selectedImage in
-                                if let selectedImage = selectedImage {
-                                    viewModel.markTaskAsDone(at: index, with: selectedImage)
-                                } else {
-                                    viewModel.markTaskAsDone(at: index)
+
+                        if(viewModel.isTasksLoading){
+                            ProgressView("Loading Shifts...")
+                        } else {
+                            ForEach(viewModel.tasks.indices, id: \.self) { index in
+                                TaskItem(task: $viewModel.tasks[index]) { selectedImage in
+                                    if let selectedImage = selectedImage {
+                                        viewModel.markTaskAsDone(at: index, with: selectedImage)
+                                    } else {
+                                        viewModel.markTaskAsDone(at: index)
+                                    }
                                 }
                             }
                         }
@@ -124,18 +128,25 @@ struct TaskScreen: View {
                         }
                     }
                     
-                    // Employee List
-                    //                if shift.role.lowercased() == "head-trucker" {
-                    //                    VStack(alignment: .leading, spacing: 10) {
-                    //                        Text("Employees:")
-                    //                            .font(.headline)
-                    //                            .fontWeight(.bold)
-                    //
-                    //                        ForEach(shift.employees, id: \.id) { employee in
-                    //                            EmployeeListItem(employee: employee)
-                    //                        }
-                    //                    }
-                    //                }
+                    // Employees List
+                    if viewModel.shift.assignedUser(for: viewModel.currentUserId)?.role.lowercased() == "head trucker" {
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("Employees")
+                                .font(.secondary(size: 17))
+                                .foregroundColor(.secondaryText)
+                            ScrollView {
+                                VStack(spacing: 5) {
+                                    ForEach(viewModel.shift.assignedUsers, id: \.userId) { user in
+                                        EmployeeCard(user: user, displayClockInTime: true)
+                                    }
+                                }
+                            }
+                            .frame(height: 250)
+                            .background(Color.white)
+                            .cornerRadius(10)
+                            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                        }
+                    }
                 }
                 .padding()
             }
