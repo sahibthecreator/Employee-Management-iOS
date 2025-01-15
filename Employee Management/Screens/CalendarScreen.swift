@@ -50,8 +50,8 @@ struct CalendarScreen: View {
                             Text("No shifts for this week.")
                                 .foregroundColor(.gray)
                         } else {
-                            ForEach(viewModel.shifts) { shift in
-                                ShiftCard(shift: shift)
+                            ForEach($viewModel.shifts) { $shift in
+                                ShiftCard(shift: $shift)
                             }
                         }
                     }

@@ -69,27 +69,7 @@ struct TaskScreen: View {
                             }
                             
                         }
-                        TaskItem(
-                            task: .constant(TaskDTO(
-                                id: -1,
-                                title: "Clock In",
-                                requiresImage: false,
-                                isDone: viewModel.shift.assignedUser(for: viewModel.currentUserId)?.clockInTime != nil,
-                                time: viewModel.shift.assignedUser(for: viewModel.currentUserId)?.clockInTime?.formatted(date: .omitted, time: .shortened)
-                            ))
-                        ) { selectedImage in
-                            viewModel.showClockInAlert = true
-                        }
-                        .alert(isPresented: $viewModel.showClockInAlert) {
-                            Alert(
-                                title: Text("Clock In"),
-                                message: Text("Are you sure you want to clock in?"),
-                                primaryButton: .default(Text("Yes"), action: {
-                                    viewModel.clockIn()
-                                }),
-                                secondaryButton: .cancel()
-                            )
-                        }
+
 
                         if(viewModel.isTasksLoading){
                             ProgressView("Loading Shifts...")
@@ -103,28 +83,6 @@ struct TaskScreen: View {
                                     }
                                 }
                             }
-                        }
-                        
-                        TaskItem(
-                            task: .constant(TaskDTO(
-                                id: 0,
-                                title: "Clock Out",
-                                requiresImage: false,
-                                isDone: viewModel.shift.assignedUser(for: viewModel.currentUserId)?.clockOutTime != nil,
-                                time: viewModel.shift.assignedUser(for: viewModel.currentUserId)?.clockOutTime?.formatted(date: .omitted, time: .shortened)
-                            ))
-                        ) { selectedImage in
-                            viewModel.showClockOutAlert = true
-                        }
-                        .alert(isPresented: $viewModel.showClockOutAlert) {
-                            Alert(
-                                title: Text("Clock Out"),
-                                message: Text("Are you sure you want to clock out?"),
-                                primaryButton: .default(Text("Yes"), action: {
-                                    viewModel.clockOut()
-                                }),
-                                secondaryButton: .cancel()
-                            )
                         }
                     }
                     

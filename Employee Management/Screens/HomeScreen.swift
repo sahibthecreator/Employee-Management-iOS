@@ -38,8 +38,8 @@ struct HomeScreen: View {
                                 .padding()
                         } else {
                             VStack(spacing: 10) {
-                                ForEach(viewModel.shifts) { shift in
-                                    ShiftCard(shift: shift)
+                                ForEach($viewModel.shifts) { $shift in
+                                    ShiftCard(shift: $shift)
                                 }
                             }
                         }

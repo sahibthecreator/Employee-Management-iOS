@@ -34,19 +34,6 @@ class TaskViewModel: ObservableObject {
         loadTasks(for: shift)
     }
     
-    func clockIn() {
-        updateAssignedUserField(
-            field: "clockInTime",
-            value: Timestamp(date: Date())
-        )
-    }
-
-    func clockOut() {
-        updateAssignedUserField(
-            field: "clockOutTime",
-            value: Timestamp(date: Date())
-        )
-    }
     
     private func updateAssignedUserField(field: String, value: Any) {
         guard let shiftId = shift.id else { return }
