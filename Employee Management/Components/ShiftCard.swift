@@ -164,7 +164,7 @@ struct ShiftCard: View {
             .cornerRadius(10)
             .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 5)
             .navigationDestination(isPresented: $navigateToTaskScreen) {
-                TaskScreen(shift: shift)
+                TaskScreen(shift: $shift)
             }
             .alert(isPresented: $showConfirmationAlert) {
                 let currentUser = shift.assignedUsers.first(where: { $0.userId == Auth.auth().currentUser?.uid })

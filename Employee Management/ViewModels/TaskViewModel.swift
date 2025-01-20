@@ -9,6 +9,7 @@ import Foundation
 import FirebaseFirestore
 import FirebaseAuth
 import FirebaseStorage
+import SwiftUI
 
 class TaskViewModel: ObservableObject {
     @Published var tasks: [TaskDTO] = []
@@ -19,7 +20,7 @@ class TaskViewModel: ObservableObject {
     @Published var isUploadingImage = false
     private var completedTaskIds: Set<Int> = []
     private var db = Firestore.firestore()
-    var shift: ShiftDTO
+    @Binding var shift: ShiftDTO
     
     var progress: Double {
         tasks.isEmpty ? 0 : Double(completedCount) / Double(tasks.count)
@@ -29,9 +30,9 @@ class TaskViewModel: ObservableObject {
         Auth.auth().currentUser?.uid
     }
     
-    init(shift: ShiftDTO) {
-        self.shift = shift
-        loadTasks(for: shift)
+    init(shift: Binding<ShiftDTO>) {
+        _shift = shift
+        loadTasks(for: shift.wrappedValue)
     }
     
     
@@ -195,7 +196,7 @@ class TaskViewModel: ObservableObject {
             
             // Update the local shift object
             let updatedAssignedUsers = assignedUsersData.compactMap { AssignedUser.fromFirestore($0) }
-
+    
             // Extract the current user's completed tasks
             let completedTasks = self.getCompletedTasks(for: Auth.auth().currentUser?.uid, from: updatedAssignedUsers)
             completion(completedTasks)

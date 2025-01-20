@@ -12,7 +12,7 @@ import FirebaseAuth
 struct TaskScreen: View {
     @StateObject private var viewModel: TaskViewModel
     
-    init(shift: ShiftDTO) {
+    init(shift: Binding<ShiftDTO>) {
         _viewModel = StateObject(wrappedValue: TaskViewModel(shift: shift))
     }
 

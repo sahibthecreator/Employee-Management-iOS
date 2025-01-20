@@ -16,6 +16,7 @@ class AuthViewModel: ObservableObject {
     @Published var isAuthenticated: Bool = false
     @Published var errorMessage: String?
     @Published var isLoading: Bool = false
+    @Published var isSecure: Bool = true
     
     @Published var authStateIsLoading: Bool = true
     private var authListener: AuthStateDidChangeListenerHandle?

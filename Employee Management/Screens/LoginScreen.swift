@@ -40,13 +40,34 @@ struct LoginScreen: View {
                         )
                         .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
                         .keyboardType(.emailAddress)
-                        SecureField("Password",
-                                  text: $viewModel.password,
-                                  prompt: Text("Password")
-                            .foregroundColor(.white)
-                            .font(AppFonts.primary(size: 13))
-                        )
-                        .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
+                        
+                        ZStack(alignment: .trailing) {
+                            if(viewModel.isSecure) {
+                                SecureField("Password",
+                                            text: $viewModel.password,
+                                            prompt: Text("Password")
+                                    .foregroundColor(.white)
+                                    .font(AppFonts.primary(size: 13))
+                                )
+                                .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
+                                .opacity(viewModel.isSecure ? 1 : 0)
+                            } else {
+                                TextField("Password",
+                                          text: $viewModel.password,
+                                          prompt: Text("Password")
+                                    .foregroundColor(.white)
+                                    .font(AppFonts.primary(size: 13))
+                                )
+                            }
+                            Button(action: {
+                                viewModel.isSecure.toggle()
+                            }) {
+                                Image(systemName: viewModel.isSecure ? "eye.slash.fill" : "eye.fill")
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                        
+                        
                     }
                     .padding()
                     .background(Color.clear)
