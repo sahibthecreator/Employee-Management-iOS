@@ -115,6 +115,10 @@ class TaskViewModel: ObservableObject {
                     self?.isTasksLoading = false
                     self?.tasks = allTasks
                     self?.completedCount = allTasks.filter { $0.isDone }.count
+                    // Replace local shift's completedTasks with newly fetched one
+                    if let index = self?.shift.assignedUsers.firstIndex(where: { $0.userId == self?.currentUserId }) {
+                        self?.shift.assignedUsers[index].completedTasks = allTasks.filter { $0.isDone }.map { $0.id }
+                    }
                 }
             }
         }
@@ -191,10 +195,7 @@ class TaskViewModel: ObservableObject {
             
             // Update the local shift object
             let updatedAssignedUsers = assignedUsersData.compactMap { AssignedUser.fromFirestore($0) }
-//            DispatchQueue.main.async {
-//                self.shift.assignedUsers = updatedAssignedUsers
-//            }
-            
+
             // Extract the current user's completed tasks
             let completedTasks = self.getCompletedTasks(for: Auth.auth().currentUser?.uid, from: updatedAssignedUsers)
             completion(completedTasks)
@@ -222,11 +223,11 @@ class TaskViewModel: ObservableObject {
         // find the current user's record
         if let index = updatedAssignedUsers.firstIndex(where: { $0.userId == currentUser.uid }) {
             var user = updatedAssignedUsers[index]
-            var completedTasks = user.completedTasks ?? []
-            
+            var completedTaskIds = user.completedTasks ?? []
+//            var completedTaskIds = tasks.filter { $0.isDone }.map { $0.id }
             // update the completedTasks array if the task isn't already marked as done
-            completedTasks.append(taskId)
-            user.completedTasks = completedTasks
+            completedTaskIds.append(taskId)
+            user.completedTasks = completedTaskIds
             updatedAssignedUsers[index] = user
             // update with the modified assignedUsers array
             db.collection("shifts").document(shiftId).updateData([

@@ -43,6 +43,7 @@ class HomeViewModel: ObservableObject {
           .whereField("assignedUserIds", arrayContains: userId)
           .whereField("startTime", isGreaterThanOrEqualTo: Timestamp(date: today))
           .order(by: "startTime")
+          .limit(to: 2)
           .getDocuments { [weak self] snapshot, error in
               DispatchQueue.main.async {
                   if let error = error {
@@ -82,6 +83,7 @@ class HomeViewModel: ObservableObject {
         db.collection("events")
           .whereField("startTime", isGreaterThan: Timestamp(date: Date()))
           .order(by: "startTime")
+          .limit(to: 2)
           .getDocuments { [weak self] snapshot, error in
               DispatchQueue.main.async {
                   self?.eventsIsLoading = false

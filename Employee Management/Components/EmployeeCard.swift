@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import FirebaseAuth
 
 struct EmployeeCard: View {
     let user: AssignedUser
@@ -28,7 +29,7 @@ struct EmployeeCard: View {
                 )
             
             VStack(alignment: .leading) {
-                Text(user.fullName ?? "Unknown")
+                Text(user.userId == Auth.auth().currentUser?.uid ? "Me" : (user.fullName ?? "Unknown"))
                     .font(.secondary(size: 17))
                 
                 Text(user.role)
@@ -38,11 +39,11 @@ struct EmployeeCard: View {
             Spacer()
             if(displayClockInTime) {
                 if let clockInTime = user.clockInTime {
-                    Text("Clocker In At: \(clockInTime.formatted(date: .omitted, time: .shortened))")
+                    Text("Clocked in at: \(clockInTime.formatted(date: .omitted, time: .shortened))")
                         .font(.secondary(size: 13))
                         .foregroundColor(.green)
                 } else {
-                    Text("Not Clocked In")
+                    Text("Not clocked in")
                         .font(.secondary(size: 13))
                         .foregroundColor(.red)
                 }

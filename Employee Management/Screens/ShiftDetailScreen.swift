@@ -36,24 +36,7 @@ struct ShiftDetailScreen: View {
                 DetailRow(title: "Additional Information", content: shift.event?.note ?? "No additional information")
                 
                 DetailRow(title: "Number of Employees", content: "\(shift.assignedUsers.count)")
-                
-                // Employees List
-                VStack(alignment: .leading, spacing: 5) {
-                    Text("Employees")
-                        .font(.secondary(size: 17))
-                        .foregroundColor(.secondaryText)
-                    ScrollView {
-                        VStack(spacing: 5) {
-                            ForEach(shift.assignedUsers, id: \.userId) { user in
-                                EmployeeCard(user: user)
-                            }
-                        }
-                    }
-                    .frame(height: 250)
-                    .background(Color.white)
-                    .cornerRadius(10)
-                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
-                }
+        
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding()

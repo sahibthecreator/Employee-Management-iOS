@@ -69,10 +69,8 @@ struct TaskScreen: View {
                             }
                             
                         }
-
-
                         if(viewModel.isTasksLoading){
-                            ProgressView("Loading Shifts...")
+                            ProgressView("Loading tasks...")
                         } else {
                             ForEach(viewModel.tasks.indices, id: \.self) { index in
                                 TaskItem(task: $viewModel.tasks[index]) { selectedImage in

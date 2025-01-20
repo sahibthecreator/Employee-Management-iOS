@@ -89,7 +89,7 @@ struct ShiftCard: View {
                             .foregroundColor(.secondaryText)
                     }
                 }
-                // Clock in/out / go to tasks buttons
+                // Clock in/out & go to tasks buttons
                 if Calendar.current.isDateInToday(shift.startTime) {
                     if let currentUser = shift.assignedUsers.first(where: { $0.userId == Auth.auth().currentUser?.uid }) {
                         if let totalTasks = totalTasksForRole {
